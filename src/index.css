@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/container-queries";
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-primary: #0b6a39;
+  --color-saffron: #ff9933;
+  --color-earth-light: #fcf9f2;
+  --color-earth-warm: #f4eee0;
+  --color-background-light: #fdfbf7;
+  --color-background-dark: #112119;
+  --font-display: "Inter", sans-serif;
+  --font-hindi: "Tiro Devanagari Hindi", serif;
+  --font-punjabi: "Tiro Gurmukhi", serif;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.mandana-pattern {
+  background-image: url("https://placeholder.pics/svg/300");
+  background-color: #fdfbf7;
+}
+
+.hero-pattern {
+  background-image: radial-gradient(rgba(11, 106, 57, 0.5) 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+  opacity: 0.05;
+}
+
+.typed-cursor {
+  color: #0b6a39;
+}
