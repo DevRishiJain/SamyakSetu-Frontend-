@@ -25,3 +25,8 @@ dist-ssr
 
 # Cloudflared
 cloudflared-linux-amd64
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
