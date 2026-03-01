@@ -1,4 +1,7 @@
+import { useLanguage } from '../context/LanguageContext';
+
 export default function History() {
+    const { t } = useLanguage();
     return (
         <div className="p-6 max-w-4xl mx-auto flex-1 w-full space-y-8">
             <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
@@ -6,8 +9,8 @@ export default function History() {
                     <span className="material-symbols-outlined text-2xl">history</span>
                 </div>
                 <div>
-                    <h1 className="text-2xl font-bold">Advisory History</h1>
-                    <p className="text-slate-500 text-sm">Past reports, alerts, and AI insights mapped by time.</p>
+                    <h1 className="text-2xl font-bold">{t('historyTitle')}</h1>
+                    <p className="text-slate-500 text-sm">{t('historySub')}</p>
                 </div>
             </div>
 

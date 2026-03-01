@@ -3,34 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 export default function DashboardHome() {
     const navigate = useNavigate();
-    const { language } = useLanguage();
-
-    const translations = {
-        'English (India)': {
-            greeting: 'Namaste, Ram Singh!',
-            subtext: 'Your fields are looking healthy today. The current soil moisture is optimal for the upcoming harvest cycle.',
-            botText: '"Today is a great day for sowing!"',
-            botName: 'Setu Mitra',
-            quickActions: 'Quick Actions',
-            uploadSoil: 'Upload Soil',
-            uploadDesc: 'Use camera for instant health analysis and crop advisory.',
-            chatAI: 'Chat with AI',
-            chatDesc: 'Ask questions, upload pest photos, or talk using voice chat.'
-        },
-        'हिन्दी': {
-            greeting: 'नमस्ते राम सिंह!',
-            subtext: 'आपके खेत आज स्वस्थ दिख रहे हैं। आगामी फसल चक्र के लिए मिट्टी की नमी एकदम सही है।',
-            botText: '"आज बुवाई के लिए बहुत अच्छा दिन है!"',
-            botName: 'सेतु मित्र',
-            quickActions: 'त्वरित कार्यवाही',
-            uploadSoil: 'मिट्टी अपलोड करें',
-            uploadDesc: 'त्वरित स्वास्थ्य विश्लेषण और फसल सलाह के लिए कैमरे का उपयोग करें।',
-            chatAI: 'AI से बात करें',
-            chatDesc: 'प्रश्न पूछें, कीटों की तस्वीरें अपलोड करें, या वॉयस चैट करें।'
-        },
-    };
-
-    const t = (key) => translations[language]?.[key] || translations['English (India)'][key];
+    const { language, t } = useLanguage();
 
     return (
         <div className="p-6 space-y-6 max-w-6xl mx-auto flex-1 w-full">

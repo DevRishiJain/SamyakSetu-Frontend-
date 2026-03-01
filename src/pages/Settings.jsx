@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Settings() {
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
+    const { language, setLanguage, t } = useLanguage();
 
     const [isLangModalOpen, setIsLangModalOpen] = useState(false);
     const [isLocModalOpen, setIsLocModalOpen] = useState(false);
-    const [selectedLang, setSelectedLang] = useState('English (India)');
 
     // Location Form States
     const [locSearch, setLocSearch] = useState('');
@@ -16,7 +17,7 @@ export default function Settings() {
     const [currentLoc, setCurrentLoc] = useState('Nagpur, Maharashtra, India');
 
     const languages = [
-        { name: 'English (India)', native: 'English (India)' },
+        { name: 'English', native: 'English' },
         { name: 'Hindi', native: 'हिन्दी' },
         { name: 'Telugu', native: 'తెలుగు' },
         { name: 'Marathi', native: 'मराठी' },
@@ -42,8 +43,8 @@ export default function Settings() {
                     <span className="material-symbols-outlined text-2xl">settings</span>
                 </div>
                 <div>
-                    <h1 className="text-2xl font-bold">Profile & Settings</h1>
-                    <p className="text-slate-500 text-sm">Manage your Setu Mitra preferences.</p>
+                    <h1 className="text-2xl font-bold">{t('profileSettings')}</h1>
+                    <p className="text-slate-500 text-sm">{t('profileSub')}</p>
                 </div>
             </div>
 
@@ -60,14 +61,14 @@ export default function Settings() {
                         <div className="z-10">
                             <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Ram Singh</h2>
                             <p className="text-sm font-medium text-slate-500 mb-1">+91 98765 43210</p>
-                            <p className="text-[11px] uppercase tracking-widest font-black text-primary bg-primary/10 px-3 py-1 rounded-full inline-block mt-2">Verified Farmer</p>
+                            <p className="text-[11px] uppercase tracking-widest font-black text-primary bg-primary/10 px-3 py-1 rounded-full inline-block mt-2">{t('verifiedFarmer')}</p>
                         </div>
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-1 relative overflow-hidden shadow-inner">
                         <div className="flex gap-1 bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-full">
-                            <button className="flex-1 py-3 text-sm font-bold bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 rounded-full shadow-sm">General</button>
-                            <button className="flex-1 py-3 text-sm font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Security</button>
+                            <button className="flex-1 py-3 text-sm font-bold bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 rounded-full shadow-sm">{t('general')}</button>
+                            <button className="flex-1 py-3 text-sm font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">{t('security')}</button>
                         </div>
                     </div>
                 </div>
@@ -79,12 +80,12 @@ export default function Settings() {
                         <div className="p-6">
                             <h3 className="text-lg font-bold flex items-center gap-2 mb-6">
                                 <span className="material-symbols-outlined text-saffron">brush</span>
-                                Personalization Base
+                                {t('personalization')}
                             </h3>
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="font-bold">Dark Mode</p>
-                                    <p className="text-xs text-slate-500 max-w-xs mt-1">Protect your eyes and save smartphone battery, especially scanning soil fields at night.</p>
+                                    <p className="font-bold">{t('darkModeTitle')}</p>
+                                    <p className="text-xs text-slate-500 max-w-xs mt-1">{t('darkModeDesc')}</p>
                                 </div>
                                 <button
                                     onClick={toggleTheme}
@@ -99,16 +100,16 @@ export default function Settings() {
 
                         <div className="p-6 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer flex items-center justify-between group" onClick={() => setIsLangModalOpen(true)}>
                             <div>
-                                <p className="font-bold group-hover:text-primary transition-colors">Language Preferences</p>
-                                <p className="text-xs text-slate-500 max-w-xs mt-1">Currently Setu Mitra communicates with you in: <span className="font-bold text-slate-700 dark:text-slate-300">{selectedLang}</span>.</p>
+                                <p className="font-bold group-hover:text-primary transition-colors">{t('langPrefTitle')}</p>
+                                <p className="text-xs text-slate-500 max-w-xs mt-1">{t('langPrefDesc')} <span className="font-bold text-slate-700 dark:text-slate-300">{language}</span>.</p>
                             </div>
                             <span className="material-symbols-outlined text-slate-400 group-hover:text-primary relative transition-transform group-hover:translate-x-1">chevron_right</span>
                         </div>
 
                         <div className="p-6 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer flex items-center justify-between group" onClick={() => setIsLocModalOpen(true)}>
                             <div>
-                                <p className="font-bold group-hover:text-primary transition-colors">Your Farm Location</p>
-                                <p className="text-xs text-slate-500 max-w-xs mt-1">Update your farm coordinates for precise incoming climate alert forecasting. <br /><span className="font-bold text-primary mt-1 inline-block bg-primary/10 px-2 py-0.5 rounded">{currentLoc}</span></p>
+                                <p className="font-bold group-hover:text-primary transition-colors">{t('farmLocTitle')}</p>
+                                <p className="text-xs text-slate-500 max-w-xs mt-1">{t('farmLocDesc')} <br /><span className="font-bold text-primary mt-1 inline-block bg-primary/10 px-2 py-0.5 rounded">{currentLoc}</span></p>
                             </div>
                             <span className="material-symbols-outlined text-slate-400 group-hover:text-primary relative transition-transform group-hover:translate-x-1">chevron_right</span>
                         </div>
@@ -119,8 +120,8 @@ export default function Settings() {
                         <div className="flex items-center gap-4 text-red-600 dark:text-red-500">
                             <span className="material-symbols-outlined">logout</span>
                             <div className="flex-1">
-                                <h4 className="font-bold">Log out securely</h4>
-                                <p className="text-xs opacity-80 font-medium">Clear session data and return to the Welcome portal.</p>
+                                <h4 className="font-bold">{t('logoutTitle')}</h4>
+                                <p className="text-xs opacity-80 font-medium">{t('logoutDesc')}</p>
                             </div>
                             <span className="material-symbols-outlined transition-transform group-hover:translate-x-2">arrow_forward</span>
                         </div>
@@ -134,7 +135,7 @@ export default function Settings() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm" onClick={() => setIsLangModalOpen(false)}>
                     <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-xl font-bold">Select Language / भाषा चुनें</h3>
+                            <h3 className="text-xl font-bold">{t('selectLang')}</h3>
                             <button onClick={() => setIsLangModalOpen(false)} className="text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full p-2">
                                 <span className="material-symbols-outlined">close</span>
                             </button>
@@ -143,14 +144,14 @@ export default function Settings() {
                             {languages.map(lang => (
                                 <button
                                     key={lang.name}
-                                    onClick={() => { setSelectedLang(lang.name); setIsLangModalOpen(false); }}
-                                    className={`w-full flex items-center justify-between p-4 rounded-xl transition-colors cursor-pointer border ${selectedLang === lang.name ? 'border-primary bg-primary/10' : 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                                    onClick={() => { setLanguage(lang.native); setIsLangModalOpen(false); }}
+                                    className={`w-full flex items-center justify-between p-4 rounded-xl transition-colors cursor-pointer border ${language === lang.native ? 'border-primary bg-primary/10' : 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                                 >
                                     <div className="flex flex-col text-left">
                                         <span className="font-bold text-slate-900 dark:text-white">{lang.native}</span>
                                         <span className="text-xs text-slate-500">{lang.name}</span>
                                     </div>
-                                    {selectedLang === lang.name && <span className="material-symbols-outlined text-primary">check_circle</span>}
+                                    {language === lang.native && <span className="material-symbols-outlined text-primary">check_circle</span>}
                                 </button>
                             ))}
                         </div>
@@ -165,7 +166,7 @@ export default function Settings() {
                         <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800">
                             <h3 className="text-xl font-bold flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">pin_drop</span>
-                                Update Location
+                                {t('updateLoc')}
                             </h3>
                             <button onClick={() => setIsLocModalOpen(false)} className="text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full p-2">
                                 <span className="material-symbols-outlined">close</span>
@@ -174,12 +175,12 @@ export default function Settings() {
                         <div className="p-6 space-y-6">
                             <button className="w-full h-14 bg-earth-warm hover:bg-primary/20 dark:bg-slate-800 dark:hover:bg-primary/30 text-primary dark:text-white rounded-xl font-bold text-lg transition-all border border-primary/20 flex items-center justify-center gap-3 cursor-pointer">
                                 <span className="material-symbols-outlined">my_location</span>
-                                Auto-Detect GPS
+                                {t('autoDetect')}
                             </button>
 
                             <div className="flex items-center gap-4 text-slate-400 text-xs font-bold uppercase tracking-widest">
                                 <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
-                                OR SEARCH
+                                {t('orSearch')}
                                 <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
                             </div>
 
@@ -189,14 +190,14 @@ export default function Settings() {
                                     <input
                                         type="text"
                                         className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-sm"
-                                        placeholder="Search village, city..."
+                                        placeholder={t('searchPlaceholder')}
                                         value={locSearch}
                                         onChange={(e) => setLocSearch(e.target.value)}
                                         required
                                     />
                                 </div>
                                 <button type="submit" disabled={loadingLoc} className="w-full h-14 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                                    {loadingLoc ? <span className="material-symbols-outlined animate-spin">refresh</span> : 'Save Location'}
+                                    {loadingLoc ? <span className="material-symbols-outlined animate-spin">refresh</span> : t('saveLocation')}
                                 </button>
                             </form>
                         </div>
