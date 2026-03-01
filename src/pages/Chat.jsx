@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { useLanguage } from '../context/LanguageContext';
 
 export default function Chat() {
-    const { t } = useLanguage();
     const [messages, setMessages] = useState([
         { id: 1, text: "Namaste Ram Singh! I am Setu Mitra, your AI farming assistant. How can I help you with your fields today?", sender: "bot", timestamp: "08:30 AM" },
         { id: 2, text: "My tomato leaves are turning slightly yellow at the bottom. What should I do?", sender: "user", timestamp: "08:35 AM" },
@@ -75,7 +73,7 @@ export default function Chat() {
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 bg-slate-50/50 dark:bg-slate-950/20">
                 <div className="text-center my-4">
                     <span className="bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold tracking-widest px-4 py-1.5 rounded-full shadow-sm">
-                        {t('todayLabel')}
+                        Today
                     </span>
                 </div>
 
@@ -125,7 +123,7 @@ export default function Chat() {
                         <input
                             type="text"
                             className="w-full bg-transparent border-none focus:ring-0 py-3.5 pl-5 pr-12 text-sm text-slate-900 dark:text-white placeholder-slate-400"
-                            placeholder={t('askSetuMitra')}
+                            placeholder="Ask Setu Mitra (Type in your language)..."
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                         />

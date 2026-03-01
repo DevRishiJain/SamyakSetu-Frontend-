@@ -5,14 +5,14 @@ import { useLanguage } from '../context/LanguageContext';
 
 export default function DashboardLayout() {
     const { theme, toggleTheme } = useTheme();
-    const { language, setLanguage, t } = useLanguage();
+    const { language, setLanguage } = useLanguage();
     const navigate = useNavigate();
     const [isHelpOpen, setIsHelpOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
     const languages = [
-        { name: 'English', native: 'English', short: 'EN' },
+        { name: 'English (India)', native: 'English (India)', short: 'EN' },
         { name: 'Hindi', native: 'हिन्दी', short: 'HI' },
         { name: 'Telugu', native: 'తెలుగు', short: 'TE' },
         { name: 'Marathi', native: 'मराठी', short: 'MR' },
@@ -20,6 +20,13 @@ export default function DashboardLayout() {
         { name: 'Tamil', native: 'தமிழ்', short: 'TA' },
         { name: 'Punjabi', native: 'ਪੰਜਾਬੀ', short: 'PA' },
     ];
+
+    const translations = {
+        'English (India)': { home: 'Home', soil: 'Soil', chat: 'Chat', history: 'History', settings: 'Settings', location: 'Nagpur, Maharashtra', help: 'Help Center' },
+        'हिन्दी': { home: 'घर', soil: 'मिट्टी', chat: 'बात करें', history: 'इतिहास', settings: 'सेटिंग', location: 'नागपुर, महाराष्ट्र', help: 'सहायता केंद्र' },
+    };
+
+    const t = (key) => translations[language]?.[key] || translations['English (India)'][key];
 
     const navItems = [
         { path: '/dashboard', icon: 'home', label: t('home'), exact: true },
@@ -64,7 +71,7 @@ export default function DashboardLayout() {
                             <img alt="User Profile" className="size-10 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkoW3O0sqso3W3ZBs4Nz0ab8UYjYQdHXcwvPTwPTolXk1SRT7T8rTdTuAmVUCn46OpJnmmrE2VQ5vKAe0KZ1qABuhCdhK-2svNZy9-l4JFA42x25kh1YrLeL-9SoZzsvlmdGvtjRMfqD3CvpJ2jQ9F2c9bKPGYHxU34E82jBcou1lNJhqcHXFvNJMbsAH6XGXNVqi_0LIvq4YDRlUN8DSoVahmY_atIaMKaY3MfWULwkedBFy7iwRRRZBg1m1ZeL3hxsw5h39yTw" />
                             <div>
                                 <p className="text-sm font-bold">Ram Singh</p>
-                                <p className="text-xs text-slate-500">{t('id')} #44921</p>
+                                <p className="text-xs text-slate-500">ID: #44921</p>
                             </div>
                         </NavLink>
                     </div>
@@ -125,7 +132,7 @@ export default function DashboardLayout() {
                             </button>
                             <button onClick={() => setIsHelpOpen(true)} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 cursor-pointer shadow-sm shadow-primary/20 hidden sm:flex">
                                 <span className="material-symbols-outlined text-sm">help</span>
-                                {t('help')}
+                                Help Center
                             </button>
                         </div>
                     </header>
@@ -177,7 +184,7 @@ export default function DashboardLayout() {
                         <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
                             <h3 className="text-xl font-bold flex items-center gap-2 text-slate-900 dark:text-slate-100">
                                 <span className="material-symbols-outlined text-primary">live_help</span>
-                                {t('help')}
+                                Help Center
                             </h3>
                             <button onClick={() => setIsHelpOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer">
                                 <span className="material-symbols-outlined text-xl">close</span>
@@ -288,7 +295,7 @@ export default function DashboardLayout() {
                                 </button>
                                 <button onClick={() => { setIsMobileMenuOpen(false); setIsHelpOpen(true); }} className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer shadow-sm hover:border-primary transition-colors flex items-center justify-center gap-1">
                                     <span className="material-symbols-outlined text-sm">help</span>
-                                    {t('help')}
+                                    Help
                                 </button>
                             </div>
                         </div>
