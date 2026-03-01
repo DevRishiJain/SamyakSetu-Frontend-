@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Samyak Setu - Your AI Farming Friend</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0b6a39",
+                        "earth-light": "#fcf9f2",
+                        "earth-warm": "#f4eee0",
+                        "background-light": "#fdfbf7",
+                        "background-dark": "#112119",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "hindi": ["'Tiro Devanagari Hindi'", "serif"],
+                        "punjabi": ["'Tiro Gurmukhi'", "serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>body {
+    font-family: "Inter", sans-serif
+    }
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.mandana-pattern {
+    background-image: url(https://placeholder.pics/svg/300);
+    background-color: #fdfbf7
+    }
+.hero-pattern {
+    background-image: radial-gradient(#0b6a39 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+    opacity: 0.05
+    }
+.typed-cursor {
+    color: #0b6a39
+    }</style>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&amp;family=Tiro+Gurmukhi&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script></head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-primary/10 px-6 py-4 lg:px-20 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">potted_plant</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-primary">Samyak Setu</h2>
+</div>
+<div class="flex items-center gap-6">
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">About</a>
+<div class="size-10 rounded-full border-2 border-primary/20 bg-cover bg-center" data-alt="Avatar of a smiling Indian farmer with a green turban" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwlFEoqHTWTpEOQOmqMekqcJJP_oKBWHFcJCNqSf6-ggM_brIaaDrYUrzweGYn6_IfbY4p-2J4loNMgYEowTIBeqm7BWoPxlKp3wMDbz3EBHWu0CXzJizQdSaCMem1xd0x8AUUXEdVgTZikQLP_j-TvbRULSYyUWVtwymyj9arH4t7IaE0l4b4t2bjN1EEprQcTSM_IC04yEIe1pd_mkGDvycQBAhyiR74fSbOYKSJc8XIh-hTXQd0mKsXLEHyU5kvDs0h5jHzJw')"></div>
+</div>
+</header>
+<main class="flex-1">
+<!-- Hero Section -->
+<div class="px-6 py-10 lg:px-20">
+<div class="relative overflow-hidden rounded-xl lg:rounded-3xl bg-primary/5 dark:bg-primary/10 p-8 lg:p-16 flex flex-col lg:flex-row items-center gap-12"><div class="absolute inset-0 bg-primary/5 pointer-events-none opacity-50"></div>
+<div class="flex-1 flex flex-col gap-6 text-center lg:text-left z-10">
+<div class="inline-flex items-center self-center lg:self-start px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+        Your AI Agricultural Assistant • आपका कृषि मित्र
+    </div>
+<h1 class="text-4xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-slate-50 mb-4"><span class="inline-block" id="typed-headline"></span></h1>
+<script>
+        new Typed('#typed-headline', {
+            strings: [
+                'Welcome friend! Let’s improve your farm together.',
+                'नमस्ते मित्र! आइए मिलकर अपने खेत को बेहतर बनाएं।',
+                'ਸਤ ਸ੍ਰੀ ਅਕਾਲ ਦੋਸਤ! ਆਓ ਤੁਹਾਡੀ ਖੇਤੀ ਸੁਧਾਰੀਏ।',
+                'বন্ধু স্বাগতম! আসুন একসাথে আপনার খামার উন্নত করি।',
+                'మిత్రమా స్వాగతం! మన పొలాన్ని కలిసి అభివృద్ధి చేద్దాం.',
+                'मित्रा स्वागत आहे! चला सोबत मिळून आपली শেতী सुधारूया.',
+                'நண்பரே வணக்கம்! உங்கள் விவசாயத்தை மேம்படுத்த ஒன்றிணைவோம்.'
+            ],
+            typeSpeed: 60,
+            backSpeed: 40,
+            loop: true,
+            backDelay: 2500,
+            showCursor: true,
+            cursorChar: '|'
+        });
+    </script>
+<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+<button class="h-12 lg:h-14 px-8 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+<span>Get Started • शुरू करें</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="h-12 lg:h-14 px-8 border-2 border-primary/20 hover:border-primary/40 text-primary bg-white/50 backdrop-blur-sm rounded-xl font-bold text-lg transition-all flex items-center justify-center">
+            Learn More • और जानें
+        </button>
+</div>
+</div>
+<div class="relative w-full max-w-[400px] flex-shrink-0 lg:w-1/3 aspect-square">
+<!-- Speech Bubble -->
+<div class="absolute -top-12 left-1/2 -translate-x-1/2 lg:-left-20 lg:top-10 lg:translate-x-0 z-20 bg-white dark:bg-slate-800 px-4 py-2 rounded-2xl shadow-xl border-2 border-primary/20 whitespace-nowrap animate-bounce">
+<p class="text-sm font-bold text-primary">Namaste! I am Setu Mitra.</p>
+<div class="absolute bottom-[-10px] left-1/2 -translate-x-1/2 lg:left-full lg:top-1/2 lg:translate-y-[-50%] lg:translate-x-[-2px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white dark:border-t-slate-800 lg:border-t-transparent lg:border-b-transparent lg:border-l-white dark:lg:border-l-slate-800 lg:border-l-[10px]"></div>
+</div>
+<div class="absolute inset-0 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="relative z-10 h-full w-full rounded-2xl bg-cover bg-center shadow-2xl border-4 border-white dark:border-slate-800" style="background-image: url('https://placeholder.pics/svg/300')">
+</div>
+<div class="absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-xl flex items-center gap-3 border border-primary/10">
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-500 uppercase">Status</p>
+<p class="text-sm font-bold text-primary">Setu Mitra is Online</p>
+</div>
+</div>
+</div></div>
+</div>
+<!-- Language Selection Section -->
+<div class="px-6 py-12 lg:px-20 max-w-7xl mx-auto">
+<div class="flex flex-col gap-2 mb-8">
+<h2 class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-slate-50">Choose Your Language</h2>
+<p class="text-slate-500">Select your preferred language to communicate with Setu Mitra.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"><!-- English -->
+<button class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-earth-warm bg-white hover:border-primary hover:shadow-md transition-all group text-center">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-1">
+<span class="material-symbols-outlined text-2xl">language</span>
+</div>
+<span class="font-bold text-lg block">English</span>
+</button>
+<!-- Hindi -->
+<button class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-earth-warm bg-white hover:border-primary hover:shadow-md transition-all group text-center">
+<div class="size-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 mb-1">
+<span class="font-hindi font-bold text-xl">अ</span>
+</div>
+<span class="font-hindi font-bold text-lg block">हिन्दी</span>
+</button>
+<!-- Telugu -->
+<button class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-earth-warm bg-white hover:border-primary hover:shadow-md transition-all group text-center">
+<div class="size-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mb-1">
+<span class="font-bold text-xl">అ</span>
+</div>
+<span class="font-bold text-lg block">తెలుగు</span>
+</button>
+<!-- Marathi -->
+<button class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-earth-warm bg-white hover:border-primary hover:shadow-md transition-all group text-center">
+<div class="size-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 mb-1">
+<span class="font-hindi font-bold text-xl">म</span>
+</div>
+<span class="font-hindi font-bold text-lg block">मराठी</span>
+</button>
+<!-- Bengali -->
+<button class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-earth-warm bg-white hover:border-primary hover:shadow-md transition-all group text-center">
+<div class="size-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 mb-1">
+<span class="font-bold text-xl">অ</span>
+</div>
+<span class="font-bold text-lg block">বাংলা</span>
+</button>
+<!-- Tamil -->
+<button class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-earth-warm bg-white hover:border-primary hover:shadow-md transition-all group text-center">
+<div class="size-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mb-1">
+<span class="font-bold text-xl">அ</span>
+</div>
+<span class="font-bold text-lg block">தமிழ்</span>
+</button>
+<!-- Punjabi -->
+<button class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-earth-warm bg-white hover:border-primary hover:shadow-md transition-all group text-center">
+<div class="size-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 mb-1">
+<span class="font-punjabi font-bold text-xl">ੳ</span>
+</div>
+<span class="font-punjabi font-bold text-lg block">ਪੰਜਾਬੀ</span>
+</button>
+<div class="flex items-center justify-center p-6 rounded-2xl border-2 border-dashed border-earth-warm bg-transparent">
+<span class="text-sm font-medium text-slate-400">More coming soon...</span>
+</div></div>
+</div>
+<!-- Trust Section / Features -->
+<div class="py-16 px-6 lg:px-20 mt-12 bg-earth-warm/50">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+<div class="flex flex-col items-center text-center gap-4 p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
+<div class="size-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">psychology_alt</span>
+</div>
+<h3 class="font-bold text-xl">AI Guidance</h3>
+<p class="text-slate-500 text-sm">Personalized advice for your specific soil and crop types using latest AI models.</p>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
+<div class="size-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">thermostat</span>
+</div>
+<h3 class="font-bold text-xl">Real-time Weather</h3>
+<p class="text-slate-500 text-sm">Hyper-local weather alerts to protect your crops from sudden climate shifts.</p>
+</div>
+<div class="flex flex-col items-center text-center gap-4 p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
+<div class="size-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">handshake</span>
+</div>
+<h3 class="font-bold text-xl">Community Trust</h3>
+<p class="text-slate-500 text-sm">Join a network of thousands of Indian farmers sharing knowledge and growth.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white dark:bg-background-dark border-t border-primary/10 py-12 px-6 lg:px-20">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-md bg-primary text-white">
+<span class="material-symbols-outlined text-lg">potted_plant</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight text-primary">Samyak Setu</h2>
+</div>
+<div class="flex gap-8 text-sm font-medium text-slate-500">
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Terms of Service</a>
+<a class="hover:text-primary" href="#">Contact Support</a>
+</div>
+<p class="text-sm text-slate-400 italic">Developed for India's prosperity. <br/> भारत की समृद्धि के लिए विकसित।</p>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

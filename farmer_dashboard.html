@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Samyak Setu - Farmer Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0b6a39",
+                        "saffron": "#ff9933",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#112119",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen" style="background-image: radial-gradient(#0b6a3911 0.5px, transparent 0.5px); background-size: 20px 20px; background-color: #fcf9f2;">
+<div class="layout-container flex flex-col md:flex-row h-full">
+<!-- Sidebar Navigation -->
+<aside class="w-full md:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col fixed md:sticky top-0 h-auto md:h-screen z-50">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary text-white p-2 rounded-lg">
+<span class="material-symbols-outlined text-2xl">agriculture</span>
+</div>
+<h2 class="text-xl font-bold text-primary dark:text-white tracking-tight">Samyak Setu</h2>
+</div>
+<nav class="flex-1 px-4 space-y-2 py-4">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-xl mb-1 flex items-center" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-medium">Home / घर</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-primary/10 rounded-xl transition-colors mb-1 flex items-center" href="#">
+<span class="material-symbols-outlined">science</span>
+<span class="font-medium">Soil / मिट्टी</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-primary/10 rounded-xl transition-colors mb-1 flex items-center" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-medium">Chat / बात करें</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-primary/10 rounded-xl transition-colors mb-1 flex items-center" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-medium">History / इतिहास</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-primary/10 rounded-xl transition-colors mb-1 flex items-center" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium">Settings / सेटिंग</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-800 rounded-xl">
+<img alt="User Profile Avatar" class="size-10 rounded-full" data-alt="Circular portrait of a friendly farmer profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkoW3O0sqso3W3ZBs4Nz0ab8UYjYQdHXcwvPTwPTolXk1SRT7T8rTdTuAmVUCn46OpJnmmrE2VQ5vKAe0KZ1qABuhCdhK-2svNZy9-l4JFA42x25kh1YrLeL-9SoZzsvlmdGvtjRMfqD3CvpJ2jQ9F2c9bKPGYHxU34E82jBcou1lNJhqcHXFvNJMbsAH6XGXNVqi_0LIvq4YDRlUN8DSoVahmY_atIaMKaY3MfWULwkedBFy7iwRRRZBg1m1ZeL3hxsw5h39yTw"/>
+<div>
+<p class="text-sm font-bold">Ram Singh</p>
+<p class="text-xs text-slate-500">ID: #44921</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 min-w-0 overflow-y-auto">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<span class="font-medium text-sm" data-location="Nagpur, Maharashtra">Nagpur, Maharashtra</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-saffron rounded-full border-2 border-white"></span>
+</button>
+<button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">help</span>
+                        Help Center
+                    </button>
+</div>
+</header>
+<div class="w-full h-2 bg-[repeating-linear-gradient(45deg,#ff9933,#ff9933_10px,#ffffff_10px,#ffffff_20px)] opacity-30"></div><div class="p-6 space-y-6 max-w-6xl mx-auto">
+<!-- Welcome & Mascot Float -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-gradient-to-br from-primary to-green-800 rounded-xl p-8 text-white relative overflow-hidden shadow-lg border-b-4 border-saffron flex items-center" style="background-image: linear-gradient(to bottom right, #0b6a39, #064e2b);">
+<div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between h-full"><div class="max-w-md pr-4">
+<h1 class="text-2xl md:text-3xl font-bold mb-3 leading-tight">Namaste, Ram Singh! / नमस्ते राम सिंह!</h1>
+<p class="text-white/80 text-sm md:text-base">Your fields are looking healthy today. The current soil moisture is optimal for the upcoming harvest cycle.</p>
+<div class="mt-6 flex gap-4">
+<button class="bg-saffron text-white px-6 py-2.5 rounded-lg font-bold shadow-md hover:scale-105 transition-transform whitespace-nowrap">Get Soil Report</button>
+</div>
+</div>
+<!-- Mascot Container -->
+<div class="mt-8 md:mt-0 relative flex flex-col items-center flex-shrink-0">
+<div class="bg-white text-slate-800 p-3 rounded-2xl rounded-br-none shadow-xl mb-3 max-w-[160px] border-2 border-saffron animate-bounce relative z-20">
+<p class="text-[11px] md:text-xs font-bold leading-tight text-center">"Today is a great day for sowing! / आज बुवाई के लिए अच्छा दिन है!"</p>
+</div>
+<div class="bg-saffron rounded-full p-3 border-4 border-white shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-white">smart_toy</span>
+</div>
+<p class="text-[10px] font-bold mt-2 uppercase tracking-widest text-white/90">Setu Mitra / सेतु मित्र</p>
+</div></div>
+</div>
+<!-- Weather Summary Widget -->
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm border-t-4 border-t-saffron shadow-md bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] flex flex-col h-full">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-bold text-slate-800 dark:text-slate-100 uppercase text-xs tracking-wider">Weather Summary</h3>
+<span class="text-primary text-xs font-bold">LIVE</span>
+</div>
+<div class="flex items-center gap-4 mb-6">
+<span class="material-symbols-outlined text-5xl text-saffron">sunny</span>
+<div>
+<h2 class="text-4xl font-bold">32°C</h2>
+<p class="text-slate-500 text-sm">Clear Skies</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-background-light dark:bg-slate-800 p-3 rounded-lg">
+<div class="flex items-center gap-2 text-slate-500 mb-1">
+<span class="material-symbols-outlined text-sm">humidity_mid</span>
+<span class="text-xs">Humidity</span>
+</div>
+<p class="font-bold">45%</p>
+</div>
+<div class="bg-background-light dark:bg-slate-800 p-3 rounded-lg">
+<div class="flex items-center gap-2 text-slate-500 mb-1">
+<span class="material-symbols-outlined text-sm">rainy</span>
+<span class="text-xs">Rain Forecast</span>
+</div>
+<p class="font-bold text-primary">0%</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Action Cards -->
+<section>
+<h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">bolt</span> Quick Actions / तुरंत कार्यवाही</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><button class="flex items-center gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl border-2 border-primary/20 hover:border-primary transition-all group shadow-sm">
+<div class="size-12 md:size-14 bg-primary/10 text-primary rounded-full flex-shrink-0 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl md:text-3xl">photo_camera</span>
+</div>
+<div class="text-left min-w-0">
+<h4 class="font-bold text-base md:text-lg truncate">Upload Soil / मिट्टी अपलोड करें</h4>
+<p class="text-slate-500 text-xs md:text-sm truncate">Use camera for instant analysis</p>
+</div>
+</button>
+<button class="flex items-center gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl border-2 border-saffron/20 hover:border-saffron transition-all group shadow-sm">
+<div class="size-12 md:size-14 bg-saffron/10 text-saffron rounded-full flex-shrink-0 flex items-center justify-center group-hover:bg-saffron group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl md:text-3xl">forum</span>
+</div>
+<div class="text-left min-w-0">
+<h4 class="font-bold text-base md:text-lg truncate">Chat with AI / AI से बात करें</h4>
+<p class="text-slate-500 text-xs md:text-sm truncate">Ask anything about your crops</p>
+</div>
+</button></div>
+</section>
+<!-- Advisory & Latest Report -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm overflow-hidden relative border-t-4 border-t-saffron shadow-md bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] flex flex-col h-full">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-bold text-lg">Latest Advisory</h3>
+<span class="bg-primary/10 text-primary text-[10px] px-2 py-1 rounded font-bold uppercase">2 Days Ago</span>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4">
+<div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">labs</span>
+</div>
+<div>
+<p class="font-bold text-sm">Soil Nitrogen: Moderate</p>
+<p class="text-sm text-slate-500">Consider adding organic urea mix before the next irrigation cycle.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-saffron">warning</span>
+</div>
+<div>
+<p class="font-bold text-sm">Pest Alert: Whiteflies</p>
+<p class="text-sm text-slate-500">Neighboring farms reported whiteflies. Check underside of leaves.</p>
+</div>
+</div>
+</div>
+<a class="mt-6 inline-flex items-center text-primary font-bold text-sm hover:underline" href="#">
+                            View Full Report <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
+</a>
+</div>
+<!-- Coming Soon Grid -->
+<div class="bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-bold text-lg text-slate-600 dark:text-slate-400">Coming Soon</h3>
+<span class="text-xs font-medium text-slate-400">Next Update</span>
+</div>
+<div class="grid grid-cols-2 gap-4"><div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center opacity-60 aspect-square">
+<span class="material-symbols-outlined text-slate-400 mb-2 text-2xl">trending_up</span>
+<p class="text-[10px] md:text-xs font-bold text-center">Mandi Prices</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center opacity-60 aspect-square">
+<span class="material-symbols-outlined text-slate-400 mb-2 text-2xl">campaign</span>
+<p class="text-[10px] md:text-xs font-bold text-center">Govt. Alerts</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center opacity-60 aspect-square">
+<span class="material-symbols-outlined text-slate-400 mb-2 text-2xl">groups</span>
+<p class="text-[10px] md:text-xs font-bold text-center">Community</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center opacity-60 aspect-square">
+<span class="material-symbols-outlined text-slate-400 mb-2 text-2xl">shield</span>
+<p class="text-[10px] md:text-xs font-bold text-center">Insurance</p>
+</div></div>
+</div>
+</section>
+</div>
+<footer class="p-6 text-center border-t border-slate-200 dark:border-slate-800 mt-auto bg-stone-50">
+<p class="text-xs text-slate-500">© 2024 Samyak Setu. Empowering Sustainable Farming.</p>
+</footer>
+</main>
+</div>
+<!-- Mobile Navigation Bar (Fixed Bottom) -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-6 py-3 flex justify-between items-center z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">science</span>
+<span class="text-[10px] font-bold">Soil</span>
+</a>
+<a class="flex flex-col items-center gap-1" href="#">
+<div class="bg-primary size-10 rounded-full flex items-center justify-center -mt-8 border-4 border-background-light shadow-lg">
+<span class="material-symbols-outlined text-white">add</span>
+</div>
+<span class="text-[10px] font-bold text-slate-400">Scan</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="text-[10px] font-bold">Chat</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</div>
+</body></html>
