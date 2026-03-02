@@ -1,15 +1,83 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { uploadSoilImage, chatWithAdvisor } from '../services/api';
 
 export default function Soil() {
-    const [loading, setLoading] = useState(false);
-    const [scanned, setScanned] = useState(false);
+    const { user } = useAuth();
+    const fileInputRef = useRef(null);
 
-    const handleUpload = () => {
-        setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            setScanned(true);
-        }, 1500);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [uploadResult, setUploadResult] = useState(null); // { soilType, imagePath }
+    const [analyzing, setAnalyzing] = useState(false);
+    const [analysis, setAnalysis] = useState(null); // { reply }
+    const [error, setError] = useState('');
+
+    const handleFileSelect = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
+            setPreviewUrl(URL.createObjectURL(file));
+            setUploadResult(null);
+            setAnalysis(null);
+            setError('');
+        }
+    };
+
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            setError('Please select an image first.');
+            return;
+        }
+        if (!user?.id) {
+            setError('User session not found. Please log in again.');
+            return;
+        }
+
+        setUploading(true);
+        setError('');
+
+        try {
+            const data = await uploadSoilImage(user.id, selectedFile);
+            setUploadResult(data);
+        } catch (err) {
+            setError(err.message || 'Failed to upload soil image. Please try again.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleAnalyze = async () => {
+        if (!uploadResult) return;
+        if (!user?.id) {
+            setError('User session not found. Please log in again.');
+            return;
+        }
+
+        setAnalyzing(true);
+        setError('');
+
+        try {
+            const data = await chatWithAdvisor({
+                farmerId: user.id,
+                message: `I just uploaded a soil image and the AI detected it as "${uploadResult.soilType}". Please provide detailed agricultural advice about this soil type including: best crops to grow, fertilizer recommendations, irrigation tips, and any seasonal considerations for my location.`,
+            });
+            setAnalysis(data);
+        } catch (err) {
+            setError(err.message || 'Failed to analyze soil. Please try again.');
+        } finally {
+            setAnalyzing(false);
+        }
+    };
+
+    const handleReset = () => {
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        setUploadResult(null);
+        setAnalysis(null);
+        setError('');
+        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     return (
@@ -24,13 +92,61 @@ export default function Soil() {
                 </div>
             </div>
 
-            {!scanned ? (
+            {/* Error Alert */}
+            {error && (
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+                    <span className="material-symbols-outlined text-lg">error</span>
+                    {error}
+                </div>
+            )}
+
+            {/* Hidden file input */}
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={handleFileSelect}
+            />
+
+            {!uploadResult ? (
                 <div className="mt-8">
-                    <div className="border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 dark:bg-slate-800/50 rounded-2xl p-12 flex flex-col items-center justify-center text-center transition-colors cursor-pointer" onClick={handleUpload}>
-                        {loading ? (
+                    <div
+                        className="border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 dark:bg-slate-800/50 rounded-2xl p-12 flex flex-col items-center justify-center text-center transition-colors cursor-pointer"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        {uploading ? (
                             <div className="flex flex-col items-center gap-4">
                                 <span className="material-symbols-outlined text-5xl text-primary animate-spin">progress_activity</span>
-                                <h3 className="font-bold text-lg">Analyzing soil sample using AI...</h3>
+                                <h3 className="font-bold text-lg">Uploading & analyzing soil using AI...</h3>
+                                <p className="text-slate-500 text-sm">This may take a few seconds</p>
+                            </div>
+                        ) : previewUrl ? (
+                            <div className="flex flex-col items-center gap-4">
+                                <img
+                                    src={previewUrl}
+                                    alt="Soil preview"
+                                    className="w-48 h-48 object-cover rounded-xl shadow-lg border-2 border-primary/20"
+                                />
+                                <div>
+                                    <h3 className="font-bold text-lg">{selectedFile.name}</h3>
+                                    <p className="text-slate-500 text-sm mt-1">{(selectedFile.size / 1024).toFixed(1)} KB</p>
+                                </div>
+                                <div className="flex gap-3 mt-2">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleUpload(); }}
+                                        className="px-6 py-2.5 bg-primary text-white rounded-lg font-bold shadow-md hover:bg-primary/90 transition-colors cursor-pointer flex items-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined text-xl">cloud_upload</span>
+                                        Upload & Scan
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleReset(); }}
+                                        className="px-6 py-2.5 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                    >
+                                        Change
+                                    </button>
+                                </div>
                             </div>
                         ) : (
                             <div className="flex flex-col items-center gap-4">
@@ -41,8 +157,8 @@ export default function Soil() {
                                     <h3 className="font-bold text-lg">Tap here to scan soil / upload photo</h3>
                                     <p className="text-slate-500 text-sm max-w-xs mt-2">Ensure the image is clear and taken under good daylight for most accurate AI detection.</p>
                                 </div>
-                                <button className="mt-4 px-6 py-2 bg-primary text-white rounded-lg font-bold shadow-md hover:bg-primary/90 transition-colors">
-                                    Open Camera
+                                <button className="mt-4 px-6 py-2 bg-primary text-white rounded-lg font-bold shadow-md hover:bg-primary/90 transition-colors cursor-pointer">
+                                    Select Image
                                 </button>
                             </div>
                         )}
@@ -50,60 +166,75 @@ export default function Soil() {
                 </div>
             ) : (
                 <div className="space-y-6 fade-in">
+                    {/* Result Card */}
                     <div className="bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800 rounded-2xl p-6 flex flex-col md:flex-row gap-6 items-start">
-                        <div className="w-full md:w-48 h-48 bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden shadow-inner flex-shrink-0 flex items-center justify-center bg-[url('https://placeholder.pics/svg/300')] bg-cover bg-center">
-                            {/* Simulated cropped photo */}
+                        <div className="w-full md:w-48 h-48 rounded-xl overflow-hidden shadow-inner flex-shrink-0">
+                            <img
+                                src={uploadResult.imagePath || previewUrl}
+                                alt="Uploaded soil"
+                                className="w-full h-full object-cover"
+                            />
                         </div>
                         <div className="flex-1 w-full space-y-4">
                             <div>
                                 <h3 className="text-sm font-bold text-green-700 dark:text-green-500 uppercase tracking-widest mb-1">Detected Soil Type</h3>
                                 <div className="flex items-center gap-3">
-                                    <h2 className="text-2xl md:text-3xl font-black">Alluvial Soil (Two-Loam)</h2>
+                                    <h2 className="text-2xl md:text-3xl font-black">{uploadResult.soilType}</h2>
                                     <span className="material-symbols-outlined text-green-500 bg-green-100 p-1 rounded-full text-base">check_circle</span>
                                 </div>
-                                <p className="text-slate-600 dark:text-slate-400 mt-2">Highly fertile layout, optimal for a vast variety of crops.</p>
+                                <p className="text-slate-600 dark:text-slate-400 mt-2">AI Vision has detected this soil type from your uploaded image.</p>
                             </div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 border-t border-green-200 dark:border-green-800 pt-4 mt-4">
-                                <div>
-                                    <p className="text-xs text-slate-500 uppercase font-bold">Moisture Level</p>
-                                    <p className="font-bold text-lg text-blue-600">42% (Optimal)</p>
+                            {uploadResult.imagePath && (
+                                <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-lg">
+                                    <span className="material-symbols-outlined text-sm">cloud_done</span>
+                                    Stored in AWS S3
                                 </div>
-                                <div>
-                                    <p className="text-xs text-slate-500 uppercase font-bold">Nitrogen (N)</p>
-                                    <p className="font-bold text-lg text-saffron">Deficient</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-slate-500 uppercase font-bold">Organic Carbon</p>
-                                    <p className="font-bold text-lg text-primary">High</p>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
 
-                    <h2 className="text-xl font-bold flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">tips_and_updates</span>
-                        Recommended Actions
-                    </h2>
+                    {/* Analyze Button */}
+                    {!analysis && (
+                        <button
+                            onClick={handleAnalyze}
+                            disabled={analyzing}
+                            className="w-full py-4 bg-saffron hover:bg-saffron/90 text-white rounded-xl font-bold transition-all shadow-lg shadow-saffron/20 flex items-center justify-center gap-3 cursor-pointer disabled:opacity-60"
+                        >
+                            {analyzing ? (
+                                <>
+                                    <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                                    Analyzing with AI...
+                                </>
+                            ) : (
+                                <>
+                                    <span className="material-symbols-outlined">auto_awesome</span>
+                                    Analyze Soil & Get AI Recommendations
+                                </>
+                            )}
+                        </button>
+                    )}
 
-                    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
-                        <div className="flex gap-4 p-4 border border-slate-100 dark:border-slate-700 rounded-lg hover:border-primary transition-colors cursor-pointer bg-slate-50 dark:bg-slate-800/50">
-                            <span className="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-full h-fit">science</span>
-                            <div>
-                                <h4 className="font-bold text-lg">Add Urea Supplements</h4>
-                                <p className="text-slate-500 mt-1">Based on visual detection, the soil lacks adequate nitrogen. Consider introducing organic urea mix in your next watering.</p>
+                    {/* AI Analysis Results */}
+                    {analysis && (
+                        <div className="space-y-4">
+                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">tips_and_updates</span>
+                                AI Analysis & Recommendations
+                            </h2>
+
+                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                                <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 text-[15px] leading-relaxed whitespace-pre-wrap">
+                                    {analysis.reply}
+                                </div>
                             </div>
                         </div>
-                        <div className="flex gap-4 p-4 border border-slate-100 dark:border-slate-700 rounded-lg hover:border-saffron transition-colors cursor-pointer bg-slate-50 dark:bg-slate-800/50">
-                            <span className="material-symbols-outlined text-saffron bg-saffron/10 p-2 rounded-full h-fit">agriculture</span>
-                            <div>
-                                <h4 className="font-bold text-lg">Recommended Crops to Plant</h4>
-                                <p className="text-slate-500 mt-1">Due to the current season + Alluvial matching, **Wheat**, **Rice**, and **Sugarcane** have extremely high viable yields right now.</p>
-                            </div>
-                        </div>
-                    </div>
+                    )}
 
-                    <button className="w-full py-4 border-2 border-primary text-primary hover:bg-primary/5 rounded-xl font-bold transition-colors" onClick={() => setScanned(false)}>
+                    <button
+                        className="w-full py-4 border-2 border-primary text-primary hover:bg-primary/5 rounded-xl font-bold transition-colors cursor-pointer"
+                        onClick={handleReset}
+                    >
                         Scan Another Sample
                     </button>
                 </div>

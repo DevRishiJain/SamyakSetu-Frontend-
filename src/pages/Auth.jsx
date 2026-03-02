@@ -1,18 +1,40 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { loginFarmer, signupFarmer } from '../services/api';
 
 export default function Auth() {
     const [isLogin, setIsLogin] = useState(true);
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [otp, setOtp] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // In the future, this is where API authentication will go.
-        // For now, we will simulate login/signup routing.
-        if (isLogin) {
-            navigate('/dashboard');
-        } else {
-            navigate('/onboarding');
+        setError('');
+        setLoading(true);
+
+        try {
+            if (isLogin) {
+                // Login flow
+                const data = await loginFarmer({ phone, otp });
+                login(data);
+                navigate('/dashboard');
+            } else {
+                // Signup flow — go to onboarding to collect GPS location
+                // We pass name, phone, otp via navigation state
+                navigate('/onboarding', {
+                    state: { name, phone, otp }
+                });
+            }
+        } catch (err) {
+            setError(err.message || 'Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -38,6 +60,22 @@ export default function Auth() {
                     </p>
                 </div>
 
+                {/* Error Alert */}
+                {error && (
+                    <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+                        <span className="material-symbols-outlined text-lg">error</span>
+                        {error}
+                    </div>
+                )}
+
+                {/* Prototype Mode Notice */}
+                <div className="mb-5 p-3 bg-saffron/10 border border-saffron/30 rounded-xl text-saffron text-xs flex items-start gap-2">
+                    <span className="material-symbols-outlined text-base mt-0.5">science</span>
+                    <div>
+                        <span className="font-bold">Prototype Mode:</span> Use OTP <span className="font-mono font-bold bg-saffron/20 px-1.5 py-0.5 rounded">000000</span> for testing. No real SMS is sent.
+                    </div>
+                </div>
+
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     {!isLogin && (
                         <div>
@@ -47,6 +85,8 @@ export default function Auth() {
                                 <input
                                     type="text"
                                     required
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                                     placeholder="Enter your full name"
                                 />
@@ -64,6 +104,8 @@ export default function Auth() {
                                 type="tel"
                                 required
                                 pattern="[0-9]{10}"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
                                 className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-r-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                                 placeholder="10-digit number"
                             />
@@ -71,20 +113,30 @@ export default function Auth() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold mb-1 text-slate-700 dark:text-slate-300">Password (पासवर्ड)</label>
+                        <label className="block text-sm font-semibold mb-1 text-slate-700 dark:text-slate-300">OTP Verification (ओटीपी)</label>
                         <div className="relative">
-                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">pin</span>
                             <input
-                                type="password"
+                                type="text"
                                 required
-                                className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                                placeholder="••••••••"
+                                maxLength={6}
+                                pattern="[0-9]{6}"
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all tracking-[0.5em] text-center font-mono text-lg"
+                                placeholder="000000"
                             />
                         </div>
                     </div>
 
-                    <button type="submit" className="mt-4 w-full cursor-pointer h-12 lg:h-14 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                        {isLogin ? (
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="mt-4 w-full cursor-pointer h-12 lg:h-14 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                        {loading ? (
+                            <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                        ) : isLogin ? (
                             <>
                                 <span>Log In • लॉग इन करें</span>
                                 <span className="material-symbols-outlined">login</span>
@@ -103,7 +155,7 @@ export default function Auth() {
                         {isLogin ? "Don't have an account? " : "Already have an account? "}
                         <button
                             type="button"
-                            onClick={() => setIsLogin(!isLogin)}
+                            onClick={() => { setIsLogin(!isLogin); setError(''); }}
                             className="text-primary font-bold hover:underline cursor-pointer focus:outline-none"
                         >
                             {isLogin ? 'Sign up' : 'Log in'}

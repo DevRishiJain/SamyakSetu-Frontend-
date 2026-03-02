@@ -5,6 +5,7 @@ import Auth from './pages/Auth';
 import Onboarding from './pages/Onboarding';
 
 import DashboardLayout from './components/DashboardLayout';
+import ProtectedRoute from './components/ProtectedRoute';
 import DashboardHome from './pages/DashboardHome';
 import Soil from './pages/Soil';
 import Chat from './pages/Chat';
@@ -19,8 +20,12 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/onboarding" element={<Onboarding />} />
 
-        {/* Nested Dashboard Routes */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
+        {/* Protected Dashboard Routes */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }>
           <Route index element={<DashboardHome />} />
           <Route path="soil" element={<Soil />} />
           <Route path="chat" element={<Chat />} />

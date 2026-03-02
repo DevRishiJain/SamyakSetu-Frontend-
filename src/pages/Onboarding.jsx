@@ -1,56 +1,98 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { signupFarmer } from '../services/api';
 
 export default function Onboarding() {
     const navigate = useNavigate();
+    const routeLocation = useLocation();
+    const { login } = useAuth();
+
+    // Get signup data passed from Auth page
+    const signupData = routeLocation.state || {};
+    const { name = '', phone = '', otp = '000000' } = signupData;
+
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const [location, setLocation] = useState({ lat: null, lng: null, address: '' });
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleGetLocation = () => {
         setLoading(true);
+        setError('');
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
                     const { latitude, longitude } = position.coords;
-                    // Mocking Google Maps Reverse Geocoding
-                    setTimeout(() => {
+                    // Use a simple reverse geocoding approach 
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                        const data = await res.json();
+                        const address = data.display_name || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+                        setLocation({ lat: latitude, lng: longitude, address });
+                        setSearchQuery(address.split(',').slice(0, 3).join(','));
+                    } catch {
                         setLocation({
                             lat: latitude,
                             lng: longitude,
-                            address: 'Nagpur, Maharashtra, India' // Simulated derived address
+                            address: `Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`
                         });
-                        setSearchQuery('Nagpur, Maharashtra, India');
-                        setLoading(false);
-                    }, 1000);
+                        setSearchQuery(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+                    }
+                    setLoading(false);
                 },
                 (error) => {
                     console.error("Error getting location: ", error);
                     setLoading(false);
-                    alert("Unable to fetch location automatically. Please search manually.");
+                    setError("Unable to fetch location automatically. Please search manually.");
                 }
             );
         } else {
             setLoading(false);
-            alert("Geolocation is not supported by your browser");
+            setError("Geolocation is not supported by your browser");
         }
     };
 
-    const handleContinue = (e) => {
+    const handleContinue = async (e) => {
         e.preventDefault();
-        if (location.lat && location.lng) {
-            // Save to DB / Context here
-            console.log('Saved Coordinates:', location);
+        if (!location.lat || !location.lng) {
+            setError('Please provide your location to continue.');
+            return;
+        }
+        if (!name || !phone) {
+            setError('Missing signup information. Please go back and fill the form.');
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+
+        try {
+            const data = await signupFarmer({
+                name,
+                phone,
+                otp,
+                latitude: location.lat,
+                longitude: location.lng,
+            });
+            // Login the user with the response data (includes token)
+            login(data);
             navigate('/dashboard');
-        } else {
-            alert('Please provide your location or allow permissions to continue.');
+        } catch (err) {
+            setError(err.message || 'Signup failed. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Simulated typeahead map search
+    // Simple search simulation (setting lat/lng to a default for search)
     const handleSearch = (e) => {
         e.preventDefault();
+        if (!searchQuery.trim()) return;
         setLoading(true);
+        setError('');
+        // For a proper implementation, we'd use a geocoding API
+        // For now, use default Indian coordinates
         setTimeout(() => {
             setLocation({
                 lat: 21.1458,
@@ -78,15 +120,29 @@ export default function Onboarding() {
                     <p className="text-slate-500 text-center text-sm">
                         Accurate location helps Setu Mitra provide precise hyper-local weather alerts and soil crop suggestions.
                     </p>
+                    {name && (
+                        <p className="mt-2 text-primary font-bold text-sm">
+                            Welcome, {name}! 🌾
+                        </p>
+                    )}
                 </div>
+
+                {/* Error Alert */}
+                {error && (
+                    <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+                        <span className="material-symbols-outlined text-lg">error</span>
+                        {error}
+                    </div>
+                )}
 
                 <div className="flex flex-col gap-6">
                     <button
                         onClick={handleGetLocation}
-                        className="w-full cursor-pointer h-14 bg-earth-warm hover:bg-primary/20 dark:bg-slate-800 dark:hover:bg-primary/30 text-primary dark:text-white rounded-xl font-bold text-lg transition-all border border-primary/20 flex items-center justify-center gap-3"
+                        disabled={loading}
+                        className="w-full cursor-pointer h-14 bg-earth-warm hover:bg-primary/20 dark:bg-slate-800 dark:hover:bg-primary/30 text-primary dark:text-white rounded-xl font-bold text-lg transition-all border border-primary/20 flex items-center justify-center gap-3 disabled:opacity-50"
                     >
                         {loading && !searchQuery ? (
-                            <span className="material-symbols-outlined animate-spin">refresh</span>
+                            <span className="material-symbols-outlined animate-spin">progress_activity</span>
                         ) : (
                             <span className="material-symbols-outlined">my_location</span>
                         )}
@@ -116,7 +172,7 @@ export default function Onboarding() {
                                 <span className="material-symbols-outlined text-primary">location_on</span>
                                 <div className="text-sm">
                                     <p className="font-bold text-slate-900 dark:text-white">{location.address}</p>
-                                    <p className="text-slate-500 text-xs">Lat: {location.lat.toFixed(4)}, Lng: {location.lng.toFixed(4)}</p>
+                                    <p className="text-slate-500 text-xs">Lat: {location.lat?.toFixed(4)}, Lng: {location.lng?.toFixed(4)}</p>
                                 </div>
                             </div>
                             <span className="material-symbols-outlined text-green-600">check_circle</span>
@@ -126,12 +182,18 @@ export default function Onboarding() {
                     <div className="mt-4">
                         <button
                             onClick={handleContinue}
-                            disabled={!location.lat}
+                            disabled={!location.lat || loading}
                             className={`w-full cursor-pointer h-14 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 shadow-lg 
                                 ${location.lat ? 'bg-primary hover:bg-primary/90 text-white shadow-primary/20' : 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed shadow-none'}`}
                         >
-                            <span>Save & Continue to Dashboard</span>
-                            <span className="material-symbols-outlined">arrow_forward</span>
+                            {loading ? (
+                                <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                            ) : (
+                                <>
+                                    <span>Save & Continue to Dashboard</span>
+                                    <span className="material-symbols-outlined">arrow_forward</span>
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>

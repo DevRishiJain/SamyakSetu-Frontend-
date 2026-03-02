@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function DashboardLayout() {
     const { theme, toggleTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [isHelpOpen, setIsHelpOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,11 +24,21 @@ export default function DashboardLayout() {
     ];
 
     const translations = {
-        'English (India)': { home: 'Home', soil: 'Soil', chat: 'Chat', history: 'History', settings: 'Settings', location: 'Nagpur, Maharashtra', help: 'Help Center' },
-        'हिन्दी': { home: 'घर', soil: 'मिट्टी', chat: 'बात करें', history: 'इतिहास', settings: 'सेटिंग', location: 'नागपुर, महाराष्ट्र', help: 'सहायता केंद्र' },
+        'English (India)': { home: 'Home', soil: 'Soil', chat: 'Chat', history: 'History', settings: 'Settings', location: 'Farm Location', help: 'Help Center' },
+        'हिन्दी': { home: 'घर', soil: 'मिट्टी', chat: 'बात करें', history: 'इतिहास', settings: 'सेटिंग', location: 'खेत का स्थान', help: 'सहायता केंद्र' },
     };
 
     const t = (key) => translations[language]?.[key] || translations['English (India)'][key];
+
+    // Format location display
+    const locationDisplay = user?.location
+        ? `Lat: ${user.location.latitude?.toFixed(2)}, Lng: ${user.location.longitude?.toFixed(2)}`
+        : t('location');
+
+    const defaultAvatar = "https://lh3.googleusercontent.com/aida-public/AB6AXuCkoW3O0sqso3W3ZBs4Nz0ab8UYjYQdHXcwvPTwPTolXk1SRT7T8rTdTuAmVUCn46OpJnmmrE2VQ5vKAe0KZ1qABuhCdhK-2svNZy9-l4JFA42x25kh1YrLeL-9SoZzsvlmdGvtjRMfqD3CvpJ2jQ9F2c9bKPGYHxU34E82jBcou1lNJhqcHXFvNJMbsAH6XGXNVqi_0LIvq4YDRlUN8DSoVahmY_atIaMKaY3MfWULwkedBFy7iwRRRZBg1m1ZeL3hxsw5h39yTw";
+    const userAvatar = user?.profilePic || defaultAvatar;
+    const userName = user?.name || 'Farmer';
+    const userId = user?.id ? `#${user.id.slice(-5)}` : '';
 
     const navItems = [
         { path: '/dashboard', icon: 'home', label: t('home'), exact: true },
@@ -68,10 +80,10 @@ export default function DashboardLayout() {
                     </nav>
                     <div className="p-4 border-t border-slate-200 dark:border-slate-800">
                         <NavLink to="/dashboard/settings" className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
-                            <img alt="User Profile" className="size-10 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkoW3O0sqso3W3ZBs4Nz0ab8UYjYQdHXcwvPTwPTolXk1SRT7T8rTdTuAmVUCn46OpJnmmrE2VQ5vKAe0KZ1qABuhCdhK-2svNZy9-l4JFA42x25kh1YrLeL-9SoZzsvlmdGvtjRMfqD3CvpJ2jQ9F2c9bKPGYHxU34E82jBcou1lNJhqcHXFvNJMbsAH6XGXNVqi_0LIvq4YDRlUN8DSoVahmY_atIaMKaY3MfWULwkedBFy7iwRRRZBg1m1ZeL3hxsw5h39yTw" />
+                            <img alt="User Profile" className="size-10 rounded-full object-cover" src={userAvatar} />
                             <div>
-                                <p className="text-sm font-bold">Ram Singh</p>
-                                <p className="text-xs text-slate-500">ID: #44921</p>
+                                <p className="text-sm font-bold">{userName}</p>
+                                <p className="text-xs text-slate-500">ID: {userId}</p>
                             </div>
                         </NavLink>
                     </div>
@@ -87,16 +99,16 @@ export default function DashboardLayout() {
                                     <span className="material-symbols-outlined text-3xl">menu</span>
                                 </button>
                                 <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard/settings')}>
-                                    <img alt="User Profile" className="size-9 rounded-full border-2 border-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkoW3O0sqso3W3ZBs4Nz0ab8UYjYQdHXcwvPTwPTolXk1SRT7T8rTdTuAmVUCn46OpJnmmrE2VQ5vKAe0KZ1qABuhCdhK-2svNZy9-l4JFA42x25kh1YrLeL-9SoZzsvlmdGvtjRMfqD3CvpJ2jQ9F2c9bKPGYHxU34E82jBcou1lNJhqcHXFvNJMbsAH6XGXNVqi_0LIvq4YDRlUN8DSoVahmY_atIaMKaY3MfWULwkedBFy7iwRRRZBg1m1ZeL3hxsw5h39yTw" />
+                                    <img alt="User Profile" className="size-9 rounded-full border-2 border-primary/20 object-cover" src={userAvatar} />
                                     <div className="leading-tight">
-                                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Ram Singh</p>
+                                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{userName}</p>
                                     </div>
                                 </div>
                             </div>
                             {/* Desktop Location */}
                             <div className="hidden md:flex items-center gap-2 text-slate-600 dark:text-slate-300">
                                 <span className="material-symbols-outlined text-primary">location_on</span>
-                                <span className="font-medium text-sm">{t('location')}</span>
+                                <span className="font-medium text-sm">{locationDisplay}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2 md:gap-4">
@@ -284,8 +296,11 @@ export default function DashboardLayout() {
                             <div className="flex items-center gap-3 mb-4 text-slate-600 dark:text-slate-300">
                                 <span className="material-symbols-outlined text-primary text-xl">location_on</span>
                                 <div className="text-sm">
-                                    <p className="font-bold flex items-center gap-2">Nagpur <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-500 text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-widest">LIVE</span></p>
-                                    <p className="text-xs opacity-80">Maharashtra</p>
+                                    <p className="font-bold flex items-center gap-2">
+                                        {user?.location ? `${user.location.latitude?.toFixed(2)}, ${user.location.longitude?.toFixed(2)}` : 'Location'}
+                                        <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-500 text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-widest">LIVE</span>
+                                    </p>
+                                    <p className="text-xs opacity-80">GPS Coordinates</p>
                                 </div>
                             </div>
                             <div className="flex gap-2">

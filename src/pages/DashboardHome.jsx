@@ -1,13 +1,22 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { getWeather } from '../services/api';
 
 export default function DashboardHome() {
     const navigate = useNavigate();
     const { language } = useLanguage();
+    const { user } = useAuth();
+
+    // Weather state
+    const [weather, setWeather] = useState(null);
+    const [weatherLoading, setWeatherLoading] = useState(true);
+    const [weatherError, setWeatherError] = useState('');
 
     const translations = {
         'English (India)': {
-            greeting: 'Namaste, Ram Singh!',
+            greeting: `Namaste, ${user?.name?.split(' ')[0] || 'Farmer'}!`,
             subtext: 'Your fields are looking healthy today. The current soil moisture is optimal for the upcoming harvest cycle.',
             botText: '"Today is a great day for sowing!"',
             botName: 'Setu Mitra',
@@ -18,7 +27,7 @@ export default function DashboardHome() {
             chatDesc: 'Ask questions, upload pest photos, or talk using voice chat.'
         },
         'हिन्दी': {
-            greeting: 'नमस्ते राम सिंह!',
+            greeting: `नमस्ते ${user?.name?.split(' ')[0] || 'किसान'}!`,
             subtext: 'आपके खेत आज स्वस्थ दिख रहे हैं। आगामी फसल चक्र के लिए मिट्टी की नमी एकदम सही है।',
             botText: '"आज बुवाई के लिए बहुत अच्छा दिन है!"',
             botName: 'सेतु मित्र',
@@ -31,6 +40,37 @@ export default function DashboardHome() {
     };
 
     const t = (key) => translations[language]?.[key] || translations['English (India)'][key];
+
+    // Fetch weather on mount
+    useEffect(() => {
+        const fetchWeather = async () => {
+            if (!user?.id) {
+                setWeatherLoading(false);
+                return;
+            }
+            try {
+                const data = await getWeather(user.id);
+                setWeather(data);
+            } catch (err) {
+                setWeatherError(err.message || 'Failed to load weather');
+            } finally {
+                setWeatherLoading(false);
+            }
+        };
+        fetchWeather();
+    }, [user?.id]);
+
+    // Map weather condition to icon
+    const getWeatherIcon = (condition) => {
+        const lower = (condition || '').toLowerCase();
+        if (lower.includes('clear') || lower.includes('sunny')) return 'sunny';
+        if (lower.includes('cloud')) return 'cloud';
+        if (lower.includes('rain') || lower.includes('drizzle')) return 'rainy';
+        if (lower.includes('thunder') || lower.includes('storm')) return 'thunderstorm';
+        if (lower.includes('snow')) return 'ac_unit';
+        if (lower.includes('mist') || lower.includes('fog') || lower.includes('haze')) return 'foggy';
+        return 'partly_cloudy_day';
+    };
 
     return (
         <div className="p-6 space-y-6 max-w-6xl mx-auto flex-1 w-full">
@@ -62,37 +102,92 @@ export default function DashboardHome() {
                     </div>
                 </div>
 
-                {/* Weather Widget */}
+                {/* Weather Widget — Live Data */}
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm border-t-4 border-t-saffron shadow-md bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] flex flex-col h-full">
                     <div className="flex justify-between items-start mb-4">
                         <h3 className="font-bold text-slate-800 dark:text-slate-100 uppercase text-xs tracking-wider">Weather Summary</h3>
                         <span className="text-primary text-xs font-bold bg-primary/10 px-2 py-1 rounded">LIVE</span>
                     </div>
-                    <div className="flex items-center gap-4 mb-6">
-                        <span className="material-symbols-outlined text-5xl text-saffron">sunny</span>
-                        <div>
-                            <h2 className="text-4xl font-bold">32°C</h2>
-                            <p className="text-slate-500 text-sm">Clear Skies</p>
+
+                    {weatherLoading ? (
+                        <div className="flex-1 flex flex-col items-center justify-center gap-3">
+                            <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
+                            <p className="text-slate-500 text-sm">Loading weather...</p>
                         </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mt-auto">
-                        <div className="bg-background-light dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-                            <div className="flex items-center gap-2 text-slate-500 mb-1">
-                                <span className="material-symbols-outlined text-sm">water_drop</span>
-                                <span className="text-xs font-medium">Humidity</span>
+                    ) : weatherError ? (
+                        <div className="flex-1 flex flex-col items-center justify-center gap-3">
+                            <span className="material-symbols-outlined text-4xl text-slate-300">cloud_off</span>
+                            <p className="text-slate-500 text-sm text-center">{weatherError}</p>
+                        </div>
+                    ) : weather?.current ? (
+                        <>
+                            <div className="flex items-center gap-4 mb-6">
+                                {weather.current.icon ? (
+                                    <img src={weather.current.icon} alt={weather.current.condition} className="w-14 h-14" />
+                                ) : (
+                                    <span className="material-symbols-outlined text-5xl text-saffron">
+                                        {getWeatherIcon(weather.current.condition)}
+                                    </span>
+                                )}
+                                <div>
+                                    <h2 className="text-4xl font-bold">{Math.round(weather.current.temperature)}°C</h2>
+                                    <p className="text-slate-500 text-sm capitalize">{weather.current.description || weather.current.condition}</p>
+                                    {weather.current.location && (
+                                        <p className="text-xs text-primary font-bold mt-0.5">{weather.current.location}</p>
+                                    )}
+                                </div>
                             </div>
-                            <p className="font-bold text-lg">45%</p>
-                        </div>
-                        <div className="bg-background-light dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-                            <div className="flex items-center gap-2 text-slate-500 mb-1">
-                                <span className="material-symbols-outlined text-sm">rainy</span>
-                                <span className="text-xs font-medium">Rain Forecast</span>
+                            <div className="grid grid-cols-2 gap-4 mt-auto">
+                                <div className="bg-background-light dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
+                                    <div className="flex items-center gap-2 text-slate-500 mb-1">
+                                        <span className="material-symbols-outlined text-sm">water_drop</span>
+                                        <span className="text-xs font-medium">Humidity</span>
+                                    </div>
+                                    <p className="font-bold text-lg">{weather.current.humidity}%</p>
+                                </div>
+                                <div className="bg-background-light dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
+                                    <div className="flex items-center gap-2 text-slate-500 mb-1">
+                                        <span className="material-symbols-outlined text-sm">air</span>
+                                        <span className="text-xs font-medium">Wind</span>
+                                    </div>
+                                    <p className="font-bold text-lg">{weather.current.windSpeed} m/s</p>
+                                </div>
                             </div>
-                            <p className="font-bold text-lg text-primary">0%</p>
+                        </>
+                    ) : (
+                        <div className="flex-1 flex flex-col items-center justify-center gap-3">
+                            <span className="material-symbols-outlined text-4xl text-slate-300">cloud_off</span>
+                            <p className="text-slate-500 text-sm">Weather data unavailable</p>
                         </div>
-                    </div>
+                    )}
                 </div>
             </section>
+
+            {/* 5-Day Forecast Strip */}
+            {weather?.forecast && weather.forecast.length > 0 && (
+                <section>
+                    <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-lg text-saffron">calendar_month</span>
+                        5-Day Forecast
+                    </h3>
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                        {weather.forecast.slice(0, 8).map((f, idx) => (
+                            <div key={idx} className="min-w-[120px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col items-center gap-2 shadow-sm flex-shrink-0">
+                                <p className="text-[10px] text-slate-500 font-bold">{f.dateTime?.split(' ')[1]?.slice(0, 5) || ''}</p>
+                                {f.icon ? (
+                                    <img src={f.icon} alt={f.condition} className="w-8 h-8" />
+                                ) : (
+                                    <span className="material-symbols-outlined text-2xl text-saffron">
+                                        {getWeatherIcon(f.condition)}
+                                    </span>
+                                )}
+                                <p className="font-bold text-sm">{Math.round(f.temperature)}°C</p>
+                                <p className="text-[10px] text-slate-500 capitalize">{f.description?.split(' ').slice(0, 2).join(' ')}</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* Quick Actions */}
             <section>
