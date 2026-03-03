@@ -2,23 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Typed from 'typed.js';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useTranslation } from 'react-i18next';
+import { LANGUAGES } from '../i18n';
 
 export default function Welcome() {
     const el = useRef(null);
+    const featuresRef = useRef(null);
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { theme, toggleTheme } = useTheme();
+    const { language, setLanguage } = useLanguage();
     const [isLangOpen, setIsLangOpen] = useState(false);
-    const [selectedLang, setSelectedLang] = useState('English');
 
-    const languages = [
-        { name: 'English', native: 'English' },
-        { name: 'Hindi', native: 'हिन्दी' },
-        { name: 'Telugu', native: 'తెలుగు' },
-        { name: 'Marathi', native: 'मराठी' },
-        { name: 'Bengali', native: 'বাংলা' },
-        { name: 'Tamil', native: 'தமிழ்' },
-        { name: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
-    ];
+
 
     useEffect(() => {
         const typed = new Typed(el.current, {
@@ -46,62 +43,62 @@ export default function Welcome() {
 
     const features = [
         {
-            title: "Smart Soil Intelligence",
-            subtitle: "Know Your Farm from the Inside Out",
-            desc: "Stop guessing. Simply click a photo of your soil and our advanced AI vision models will detect the soil type, quality, and potential issues instantly. Based on your exact location, you get personalized crop suggestions and fertilizer recommendations tailored specifically for you.",
+            title: t('welcome.feature1Title'),
+            subtitle: t('welcome.feature1Subtitle'),
+            desc: t('welcome.feature1Desc'),
             icon: "photo_camera",
             color: "text-primary",
             bg: "bg-primary/10",
             imgStyle: "bg-gradient-to-tr from-primary to-green-600",
             image: "/images/soil_mascot.png",
-            list: ["Instant AI Soil Detection", "Land & Irrigation Profiling", "Personalized Crop Advisory"]
+            list: [t('welcome.instantAISoil'), t('welcome.landIrrigation'), t('welcome.personalizedCrop')]
         },
         {
-            title: "Hyper-Local Weather & Alerts",
-            subtitle: "Never Let the Weather Surprise You",
-            desc: "By integrating real-time weather APIs with your farm's location, Setu Mitra gives you WHAT-WHEN-HOW advisories. From predicting the perfect time to sow, to pushing urgent alerts about sudden climate shifts—protect your harvest proactively.",
+            title: t('welcome.feature2Title'),
+            subtitle: t('welcome.feature2Subtitle'),
+            desc: t('welcome.feature2Desc'),
             icon: "thermostat",
             color: "text-saffron",
             bg: "bg-saffron/10",
             imgStyle: "bg-gradient-to-tr from-saffron to-orange-500",
             image: "/images/weather_mascot.png",
             reverse: true,
-            list: ["Location-Based Auto Weather", "Sudden Climate Shift Alerts", "WHAT-WHEN-HOW Daily Advisory"]
+            list: [t('welcome.locationWeather'), t('welcome.climateAlerts'), t('welcome.dailyAdvisory')]
         },
         {
-            title: "Voice-First AI Chatbot",
-            subtitle: "Talk to Your Agricultural Expert 24/7",
-            desc: "Got a question? Just ask! Our intelligent chatbot supports speech-to-text and multi-language communication. You can even upload images of diseased leaves to get instant remedies. It's like having an agronomist in your pocket, speaking your regional language.",
+            title: t('welcome.feature3Title'),
+            subtitle: t('welcome.feature3Subtitle'),
+            desc: t('welcome.feature3Desc'),
             icon: "forum",
             color: "text-blue-500",
             bg: "bg-blue-500/10",
             imgStyle: "bg-gradient-to-tr from-blue-500 to-cyan-500",
             image: "/images/chatbot_mascot.png",
-            list: ["Text, Voice & Image Chat", "Native Language Support", "Instant Disease Remedies"]
+            list: [t('welcome.textVoiceChat'), t('welcome.nativeLanguage'), t('welcome.instantRemedies')]
         },
         {
-            title: "Community & Market Prices",
-            subtitle: "Grow Together, Sell Smarter",
-            desc: "Connect with a vast network of Indian farmers in our AI-moderated community. Share tips, discuss challenges, and compare live rates across nearby mandis to make sure you get the best possible price for your hard-earned produce.",
+            title: t('welcome.feature4Title'),
+            subtitle: t('welcome.feature4Subtitle'),
+            desc: t('welcome.feature4Desc'),
             icon: "groups",
             color: "text-purple-500",
             bg: "bg-purple-500/10",
             imgStyle: "bg-gradient-to-tr from-purple-600 to-pink-500",
             image: "/images/community_mascot.png",
             reverse: true,
-            list: ["AI-Moderated Forums", "Live Mandi Prices", "Govt Procurement Info"]
+            list: [t('welcome.aiForums'), t('welcome.liveMandiPrices'), t('welcome.govtProcurement')]
         },
         {
-            title: "Carbon Credits Marketplace",
-            subtitle: "Earn Money from Sustainable Farming",
-            desc: "Monetize your eco-friendly farming practices. Sell carbon credits directly to verified corporate buyers in our secure marketplace. Plant trees, reduce tillage, and earn supplementary income while helping the planet.",
+            title: t('welcome.feature5Title'),
+            subtitle: t('welcome.feature5Subtitle'),
+            desc: t('welcome.feature5Desc'),
             icon: "park",
             color: "text-emerald-500",
             bg: "bg-emerald-500/10",
             imgStyle: "bg-gradient-to-tr from-emerald-500 to-teal-500",
             image: "/images/carbon_mascot.png",
-            badge: "Coming Soon 🚀",
-            list: ["Trade Carbon Credits", "Corporate Buyer Validation", "Extra Sustainable Income"]
+            badge: t('welcome.feature5Badge'),
+            list: [t('welcome.tradeCarbonCredits'), t('welcome.corporateBuyer'), t('welcome.extraIncome')]
         }
     ];
 
@@ -135,16 +132,16 @@ export default function Welcome() {
                                     className="flex items-center gap-2 text-sm font-semibold hover:text-primary transition-colors cursor-pointer bg-slate-50 dark:bg-slate-800 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700"
                                 >
                                     <span className="material-symbols-outlined text-lg">language</span>
-                                    <span className="hidden sm:inline">{selectedLang}</span>
+                                    <span className="hidden sm:inline">{language}</span>
                                     <span className="material-symbols-outlined text-lg">expand_more</span>
                                 </button>
                                 {isLangOpen && (
                                     <div className="absolute right-0 top-12 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col z-50">
-                                        {languages.map(l => (
+                                        {LANGUAGES.map(l => (
                                             <button
-                                                key={l.name}
+                                                key={l.code}
                                                 onClick={() => {
-                                                    setSelectedLang(l.native);
+                                                    setLanguage(l.native);
                                                     setIsLangOpen(false);
                                                 }}
                                                 className="px-4 py-2 text-left hover:bg-primary/10 hover:text-primary font-medium transition-colors text-sm"
@@ -155,8 +152,6 @@ export default function Welcome() {
                                     </div>
                                 )}
                             </div>
-
-                            <a className="text-sm font-semibold hover:text-primary transition-colors cursor-pointer hidden md:block">About</a>
                         </div>
                     </header>
 
@@ -167,7 +162,7 @@ export default function Welcome() {
                                 <div className="absolute inset-0 bg-primary/5 pointer-events-none opacity-50"></div>
                                 <div className="flex-1 flex flex-col gap-6 text-center lg:text-left z-10 w-full">
                                     <div className="inline-flex items-center self-center lg:self-start px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-                                        Your AI Agricultural Assistant • आपका कृषि मित्र
+                                        {t('welcome.aiAssistant')}
                                     </div>
                                     <div className="min-h-[140px] md:min-h-[180px] lg:min-h-[160px] flex flex-col justify-center">
                                         <h1 className="text-4xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-slate-50 mb-0">
@@ -176,17 +171,20 @@ export default function Welcome() {
                                     </div>
                                     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
                                         <button onClick={() => navigate('/auth')} className="cursor-pointer h-12 lg:h-14 px-8 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                                            <span>Get Started</span>
+                                            <span>{t('welcome.getStarted')}</span>
                                             <span className="material-symbols-outlined">arrow_forward</span>
                                         </button>
-                                        <button className="cursor-pointer h-12 lg:h-14 px-8 border-2 border-primary/20 hover:border-primary/40 text-primary dark:text-primary dark:hover:text-primary/80 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl font-bold text-lg transition-all flex items-center justify-center">
-                                            Learn More
+                                        <button
+                                            onClick={() => featuresRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                                            className="cursor-pointer h-12 lg:h-14 px-8 border-2 border-primary/20 hover:border-primary/40 text-primary dark:text-primary dark:hover:text-primary/80 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl font-bold text-lg transition-all flex items-center justify-center"
+                                        >
+                                            {t('welcome.learnMore')}
                                         </button>
                                     </div>
                                 </div>
                                 <div className="relative w-full max-w-[320px] md:max-w-[400px] flex-shrink-0 lg:w-1/3 aspect-square mt-6 lg:mt-0">
                                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 lg:-left-20 lg:top-10 lg:translate-x-0 z-20 bg-white dark:bg-slate-800 px-4 py-2 rounded-2xl shadow-xl border-2 border-primary/20 whitespace-nowrap animate-bounce">
-                                        <p className="text-sm font-bold text-primary">Namaste! I am Setu Mitra.</p>
+                                        <p className="text-sm font-bold text-primary">{t('welcome.namasteBot')}</p>
                                         <div className="absolute bottom-[-10px] left-1/2 -translate-x-1/2 lg:left-full lg:top-1/2 lg:translate-y-[-50%] lg:translate-x-[-2px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white dark:border-t-slate-800 lg:border-t-transparent lg:border-b-transparent lg:border-l-white dark:lg:border-l-slate-800 lg:border-l-[10px]"></div>
                                     </div>
                                     <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl"></div>
@@ -197,8 +195,8 @@ export default function Welcome() {
                                             <span className="material-symbols-outlined">auto_awesome</span>
                                         </div>
                                         <div>
-                                            <p className="text-xs font-bold text-slate-500 uppercase">Status</p>
-                                            <p className="text-sm font-bold text-primary">Online & Ready</p>
+                                            <p className="text-xs font-bold text-slate-500 uppercase">{t('common.status')}</p>
+                                            <p className="text-sm font-bold text-primary">{t('welcome.onlineReady')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -206,15 +204,15 @@ export default function Welcome() {
                         </div>
 
                         {/* Detailed Features Section */}
-                        <div className="py-20 bg-earth-warm/30 dark:bg-slate-900/50">
+                        <div ref={featuresRef} className="py-20 bg-earth-warm/30 dark:bg-slate-900/50">
                             <div className="max-w-7xl mx-auto px-6 lg:px-20">
                                 <div className="text-center max-w-3xl mx-auto mb-16">
-                                    <h2 className="text-primary font-bold tracking-wider uppercase text-sm mb-3">Powering Indian Agriculture</h2>
+                                    <h2 className="text-primary font-bold tracking-wider uppercase text-sm mb-3">{t('welcome.poweringAg')}</h2>
                                     <h3 className="text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-50">
-                                        Revolutionizing Your Farm with the Power of AI
+                                        {t('welcome.revolutionizing')}
                                     </h3>
                                     <p className="mt-4 text-slate-600 dark:text-slate-400 text-lg">
-                                        Samyak Setu is built from the ground up for Indian farmers. We combine AI capabilities with local wisdom to help you maximize your yield safely and effectively.
+                                        {t('welcome.builtForFarmers')}
                                     </p>
                                 </div>
 
@@ -271,12 +269,12 @@ export default function Welcome() {
                                 <h2 className="text-lg font-bold tracking-tight text-primary">Samyak Setu</h2>
                             </div>
                             <div className="flex gap-8 text-sm font-medium text-slate-500 dark:text-slate-400">
-                                <a className="hover:text-primary transition-colors cursor-pointer">Privacy Policy</a>
-                                <a className="hover:text-primary transition-colors cursor-pointer">Terms of Service</a>
-                                <a className="hover:text-primary transition-colors cursor-pointer">Contact Support</a>
+                                <a className="hover:text-primary transition-colors cursor-pointer">{t('welcome.privacyPolicy')}</a>
+                                <a className="hover:text-primary transition-colors cursor-pointer">{t('welcome.termsOfService')}</a>
+                                <a className="hover:text-primary transition-colors cursor-pointer">{t('welcome.contactSupport')}</a>
                             </div>
                             <p className="text-sm text-slate-400 italic text-center md:text-right">
-                                Developed for India's prosperity. <br className="hidden md:block" /> भारत की समृद्धि के लिए विकसित।
+                                {t('welcome.developedForIndia')}
                             </p>
                         </div>
                     </footer>

@@ -196,3 +196,71 @@ export async function samyakAIChat(message) {
     if (!res.ok) throw new Error(data.error || 'SamyakAI chat failed');
     return data;
 }
+
+// ─────────────────────────────────────────────
+// 12. Text-to-Speech (Amazon Polly)
+//     Converts text into natural Indian voice MP3
+//     Returns { audioUrl }
+// ─────────────────────────────────────────────
+export async function textToSpeech(text) {
+    const res = await fetch(`${BASE_URL}/api/voice/tts`, {
+        method: 'POST',
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ text }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Text-to-Speech failed');
+    return data;
+}
+
+// ─────────────────────────────────────────────
+// 13. Speech-to-Text (Amazon Transcribe)
+//     Upload audio → get transcribed text
+//     Returns { text }
+//     Note: Takes 15-30 seconds to process
+// ─────────────────────────────────────────────
+export async function speechToText(audioFile) {
+    const formData = new FormData();
+    formData.append('audio', audioFile);
+
+    const res = await fetch(`${BASE_URL}/api/voice/stt`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: formData,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Speech-to-Text failed');
+    return data;
+}
+
+// ─────────────────────────────────────────────
+// 14. End-to-End Voice Chat
+//     Audio in → Transcribe → AI Reply → TTS
+//     Returns { userText, reply, audioUrl }
+// ─────────────────────────────────────────────
+export async function voiceChat(audioFile) {
+    const formData = new FormData();
+    formData.append('audio', audioFile);
+
+    const res = await fetch(`${BASE_URL}/api/voice/chat`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: formData,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Voice Chat failed');
+    return data;
+}
+
+// ─────────────────────────────────────────────
+// 15. Get Farmer History (combined timeline)
+//     Returns { chatHistory, soilUploadHistory, samyakaiHistory }
+// ─────────────────────────────────────────────
+export async function getHistory() {
+    const res = await fetch(`${BASE_URL}/api/history`, {
+        headers: authHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to fetch history');
+    return data;
+}

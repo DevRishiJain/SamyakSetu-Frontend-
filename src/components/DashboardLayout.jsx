@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { LANGUAGES, getCodeFromNative } from '../i18n';
 
 export default function DashboardLayout() {
+    const { t } = useTranslation();
     const { theme, toggleTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
     const { user } = useAuth();
@@ -12,41 +15,55 @@ export default function DashboardLayout() {
     const [isHelpOpen, setIsHelpOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+    const [locationName, setLocationName] = useState('');
 
-    const languages = [
-        { name: 'English (India)', native: 'English (India)', short: 'EN' },
-        { name: 'Hindi', native: 'हिन्दी', short: 'HI' },
-        { name: 'Telugu', native: 'తెలుగు', short: 'TE' },
-        { name: 'Marathi', native: 'मराठी', short: 'MR' },
-        { name: 'Bengali', native: 'বাংলা', short: 'BN' },
-        { name: 'Tamil', native: 'தமிழ்', short: 'TA' },
-        { name: 'Punjabi', native: 'ਪੰਜਾਬੀ', short: 'PA' },
-    ];
+    useEffect(() => {
+        const fetchLocationName = async () => {
+            if (user?.location?.latitude && user?.location?.longitude) {
+                try {
+                    const langCode = getCodeFromNative(language) || 'en';
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${user.location.latitude}&lon=${user.location.longitude}&accept-language=${langCode}`);
+                    const data = await res.json();
 
-    const translations = {
-        'English (India)': { home: 'Home', soil: 'Soil', chat: 'Chat', history: 'History', settings: 'Settings', location: 'Farm Location', help: 'Help Center' },
-        'हिन्दी': { home: 'घर', soil: 'मिट्टी', chat: 'बात करें', history: 'इतिहास', settings: 'सेटिंग', location: 'खेत का स्थान', help: 'सहायता केंद्र' },
-    };
+                    const cityOrVillage = data.address?.village || data.address?.town || data.address?.city || data.address?.county || data.address?.state_district;
+                    const state = data.address?.state;
 
-    const t = (key) => translations[language]?.[key] || translations['English (India)'][key];
+                    if (cityOrVillage && state) {
+                        setLocationName(`${cityOrVillage}, ${state}`);
+                    } else if (cityOrVillage) {
+                        setLocationName(cityOrVillage);
+                    } else if (state) {
+                        setLocationName(state);
+                    } else {
+                        setLocationName(`Lat: ${user.location.latitude.toFixed(2)}, Lng: ${user.location.longitude.toFixed(2)}`);
+                    }
+                } catch (err) {
+                    console.error("Error fetching location name:", err);
+                    setLocationName(`Lat: ${user.location.latitude.toFixed(2)}, Lng: ${user.location.longitude.toFixed(2)}`);
+                }
+            }
+        };
+        fetchLocationName();
+    }, [user?.location?.latitude, user?.location?.longitude, language]);
 
     // Format location display
     const locationDisplay = user?.location
-        ? `Lat: ${user.location.latitude?.toFixed(2)}, Lng: ${user.location.longitude?.toFixed(2)}`
-        : t('location');
+        ? (locationName || `Lat: ${user.location.latitude?.toFixed(2)}, Lng: ${user.location.longitude?.toFixed(2)}`)
+        : t('nav.farmLocation');
 
     const defaultAvatar = "https://lh3.googleusercontent.com/aida-public/AB6AXuCkoW3O0sqso3W3ZBs4Nz0ab8UYjYQdHXcwvPTwPTolXk1SRT7T8rTdTuAmVUCn46OpJnmmrE2VQ5vKAe0KZ1qABuhCdhK-2svNZy9-l4JFA42x25kh1YrLeL-9SoZzsvlmdGvtjRMfqD3CvpJ2jQ9F2c9bKPGYHxU34E82jBcou1lNJhqcHXFvNJMbsAH6XGXNVqi_0LIvq4YDRlUN8DSoVahmY_atIaMKaY3MfWULwkedBFy7iwRRRZBg1m1ZeL3hxsw5h39yTw";
     const userAvatar = user?.profilePic || defaultAvatar;
-    const userName = user?.name || 'Farmer';
-    const userId = user?.id ? `#${user.id.slice(-5)}` : '';
+    const userName = user?.name || t('common.farmer');
 
     const navItems = [
-        { path: '/dashboard', icon: 'home', label: t('home'), exact: true },
-        { path: '/dashboard/soil', icon: 'science', label: t('soil') },
-        { path: '/dashboard/chat', icon: 'chat_bubble', label: t('chat') },
-        { path: '/dashboard/history', icon: 'history', label: t('history') },
-        { path: '/dashboard/settings', icon: 'settings', label: t('settings') },
+        { path: '/dashboard', icon: 'home', label: t('nav.home'), exact: true },
+        { path: '/dashboard/soil', icon: 'science', label: t('nav.soil') },
+        { path: '/dashboard/chat', icon: 'chat_bubble', label: t('nav.chat') },
+        { path: '/dashboard/history', icon: 'history', label: t('nav.history') },
+        { path: '/dashboard/settings', icon: 'settings', label: t('nav.settings') },
     ];
+
+    const currentLangShort = LANGUAGES.find(l => l.native === language)?.short || 'EN';
 
     return (
         <div className="bg-background-light dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300"
@@ -83,7 +100,6 @@ export default function DashboardLayout() {
                             <img alt="User Profile" className="size-10 rounded-full object-cover" src={userAvatar} />
                             <div>
                                 <p className="text-sm font-bold">{userName}</p>
-                                <p className="text-xs text-slate-500">ID: {userId}</p>
                             </div>
                         </NavLink>
                     </div>
@@ -115,13 +131,13 @@ export default function DashboardLayout() {
                             <div className="relative hidden md:block">
                                 <button onClick={() => setIsLangMenuOpen(!isLangMenuOpen)} className="p-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg flex items-center gap-1 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
                                     <span className="material-symbols-outlined text-lg">language</span>
-                                    {languages.find(l => l.native === language)?.short || 'EN'}
+                                    {currentLangShort}
                                 </button>
                                 {isLangMenuOpen && (
                                     <div className="absolute right-0 top-12 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col z-50 animate-in fade-in slide-in-from-top-2">
-                                        {languages.map(l => (
+                                        {LANGUAGES.map(l => (
                                             <button
-                                                key={l.name}
+                                                key={l.code}
                                                 onClick={() => {
                                                     setLanguage(l.native);
                                                     setIsLangMenuOpen(false);
@@ -138,13 +154,9 @@ export default function DashboardLayout() {
                             <button onClick={toggleTheme} className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer flex items-center justify-center" aria-label="Toggle Theme">
                                 <span className="material-symbols-outlined">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
                             </button>
-                            <button className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors relative cursor-pointer" aria-label="Notifications">
-                                <span className="material-symbols-outlined">notifications</span>
-                                <span className="absolute top-2 right-2 size-2 bg-saffron rounded-full border-2 border-white dark:border-slate-800"></span>
-                            </button>
                             <button onClick={() => setIsHelpOpen(true)} className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 cursor-pointer shadow-sm shadow-primary/20 hidden sm:flex">
                                 <span className="material-symbols-outlined text-sm">help</span>
-                                Help Center
+                                {t('nav.helpCenter')}
                             </button>
                         </div>
                     </header>
@@ -157,7 +169,7 @@ export default function DashboardLayout() {
                     </div>
 
                     <footer className="p-6 text-center border-t border-slate-200 dark:border-slate-800 mt-auto bg-stone-50 dark:bg-slate-900">
-                        <p className="text-xs text-slate-500 dark:text-slate-400">© 2024 Samyak Setu. Empowering Sustainable Farming.</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">© {new Date().getFullYear()} Samyak Setu. {t('welcome.featuresHeading')}.</p>
                     </footer>
                 </main>
             </div>
@@ -166,11 +178,11 @@ export default function DashboardLayout() {
             <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-6 py-3 flex justify-between items-center z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pt-4 pb-6">
                 <NavLink to="/dashboard" end className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer transition-colors ${isActive ? 'text-primary' : 'text-slate-400 hover:text-primary/70'}`}>
                     <span className="material-symbols-outlined">home</span>
-                    <span className="text-[10px] font-bold">{t('home')}</span>
+                    <span className="text-[10px] font-bold">{t('nav.home')}</span>
                 </NavLink>
                 <NavLink to="/dashboard/soil" className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer transition-colors ${isActive ? 'text-primary' : 'text-slate-400 hover:text-primary/70'}`}>
                     <span className="material-symbols-outlined">science</span>
-                    <span className="text-[10px] font-bold">{t('soil')}</span>
+                    <span className="text-[10px] font-bold">{t('nav.soil')}</span>
                 </NavLink>
                 <NavLink to="/dashboard/soil" className="flex flex-col items-center gap-1 cursor-pointer relative z-10">
                     <div className="bg-primary size-12 rounded-full flex items-center justify-center -mt-10 border-4 border-background-light dark:border-slate-950 shadow-lg shadow-primary/30">
@@ -179,11 +191,11 @@ export default function DashboardLayout() {
                 </NavLink>
                 <NavLink to="/dashboard/chat" className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer transition-colors ${isActive ? 'text-primary' : 'text-slate-400 hover:text-primary/70'}`}>
                     <span className="material-symbols-outlined">forum</span>
-                    <span className="text-[10px] font-bold">{t('chat')}</span>
+                    <span className="text-[10px] font-bold">{t('nav.chat')}</span>
                 </NavLink>
                 <NavLink to="/dashboard/settings" className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer transition-colors ${isActive ? 'text-primary' : 'text-slate-400 hover:text-primary/70'}`}>
                     <span className="material-symbols-outlined">person</span>
-                    <span className="text-[10px] font-bold">{t('settings')}</span>
+                    <span className="text-[10px] font-bold">{t('nav.settings')}</span>
                 </NavLink>
             </div>
             {/* Added a spacer to make space for the bottom nav on mobile */}
@@ -196,7 +208,7 @@ export default function DashboardLayout() {
                         <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
                             <h3 className="text-xl font-bold flex items-center gap-2 text-slate-900 dark:text-slate-100">
                                 <span className="material-symbols-outlined text-primary">live_help</span>
-                                Help Center
+                                {t('helpCenter.title')}
                             </h3>
                             <button onClick={() => setIsHelpOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer">
                                 <span className="material-symbols-outlined text-xl">close</span>
@@ -204,7 +216,7 @@ export default function DashboardLayout() {
                         </div>
                         <div className="p-6 space-y-6">
                             <p className="text-sm text-slate-500 dark:text-slate-400">
-                                Need assistance? Reach out to Setu Mitra automatically or talk to our human support representatives.
+                                {t('helpCenter.description')}
                             </p>
 
                             <div className="flex flex-col gap-4">
@@ -215,14 +227,14 @@ export default function DashboardLayout() {
                                         <span className="material-symbols-outlined">smart_toy</span>
                                     </div>
                                     <div className="text-left flex-1">
-                                        <h4 className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">Chat with AI Support</h4>
-                                        <p className="text-xs text-slate-500">Fastest resolution & instant crop advice (24/7)</p>
+                                        <h4 className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">{t('helpCenter.chatWithAI')}</h4>
+                                        <p className="text-xs text-slate-500">{t('helpCenter.chatAIDesc')}</p>
                                     </div>
                                     <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">chevron_right</span>
                                 </button>
 
                                 <div className="space-y-3 pt-2">
-                                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">Connect with Humans</p>
+                                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">{t('helpCenter.connectWithHumans')}</p>
 
                                     {/* Email Option */}
                                     <a href="mailto:contact@samyaksetu.com" className="w-full flex items-center gap-4 p-4 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-saffron/50 dark:hover:border-saffron/50 cursor-pointer transition-colors group bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800">
@@ -231,7 +243,7 @@ export default function DashboardLayout() {
                                         </div>
                                         <div className="text-left flex-1">
                                             <h4 className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-saffron transition-colors">contact@samyaksetu.com</h4>
-                                            <p className="text-xs text-slate-500">Typical email reply within 2 hours</p>
+                                            <p className="text-xs text-slate-500">{t('helpCenter.emailReplyTime')}</p>
                                         </div>
                                         <span className="material-symbols-outlined text-slate-400 group-hover:text-saffron transition-colors">open_in_new</span>
                                     </a>
@@ -243,7 +255,7 @@ export default function DashboardLayout() {
                                         </div>
                                         <div className="text-left flex-1">
                                             <h4 className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-500 transition-colors">+91 92890 66578</h4>
-                                            <p className="text-xs text-slate-500">Toll-free • Available 9 AM - 6 PM</p>
+                                            <p className="text-xs text-slate-500">{t('helpCenter.tollFree')}</p>
                                         </div>
                                         <span className="material-symbols-outlined text-slate-400 group-hover:text-blue-500 transition-colors">open_in_new</span>
                                     </a>
@@ -297,8 +309,8 @@ export default function DashboardLayout() {
                                 <span className="material-symbols-outlined text-primary text-xl">location_on</span>
                                 <div className="text-sm">
                                     <p className="font-bold flex items-center gap-2">
-                                        {user?.location ? `${user.location.latitude?.toFixed(2)}, ${user.location.longitude?.toFixed(2)}` : 'Location'}
-                                        <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-500 text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-widest">LIVE</span>
+                                        {user?.location ? `${user.location.latitude?.toFixed(2)}, ${user.location.longitude?.toFixed(2)}` : t('nav.farmLocation')}
+                                        <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-500 text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-widest">{t('common.live')}</span>
                                     </p>
                                     <p className="text-xs opacity-80">GPS Coordinates</p>
                                 </div>
@@ -306,11 +318,11 @@ export default function DashboardLayout() {
                             <div className="flex gap-2">
                                 <button className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer shadow-sm hover:border-primary transition-colors flex items-center justify-center gap-1">
                                     <span className="material-symbols-outlined text-sm">language</span>
-                                    En (IN)
+                                    {currentLangShort}
                                 </button>
                                 <button onClick={() => { setIsMobileMenuOpen(false); setIsHelpOpen(true); }} className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 py-2 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer shadow-sm hover:border-primary transition-colors flex items-center justify-center gap-1">
                                     <span className="material-symbols-outlined text-sm">help</span>
-                                    Help
+                                    {t('nav.help')}
                                 </button>
                             </div>
                         </div>

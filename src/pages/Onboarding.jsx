@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { signupFarmer } from '../services/api';
+import { useTranslation } from 'react-i18next';
 
 export default function Onboarding() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const routeLocation = useLocation();
     const { login } = useAuth();
 
-    // Get signup data passed from Auth page
     const signupData = routeLocation.state || {};
     const { name = '', phone = '', otp = '000000' } = signupData;
 
@@ -24,7 +25,6 @@ export default function Onboarding() {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
                     const { latitude, longitude } = position.coords;
-                    // Use a simple reverse geocoding approach 
                     try {
                         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
                         const data = await res.json();
@@ -41,26 +41,25 @@ export default function Onboarding() {
                     }
                     setLoading(false);
                 },
-                (error) => {
-                    console.error("Error getting location: ", error);
+                () => {
                     setLoading(false);
-                    setError("Unable to fetch location automatically. Please search manually.");
+                    setError(t('settings.gpsError'));
                 }
             );
         } else {
             setLoading(false);
-            setError("Geolocation is not supported by your browser");
+            setError(t('settings.geoNotSupported'));
         }
     };
 
     const handleContinue = async (e) => {
         e.preventDefault();
         if (!location.lat || !location.lng) {
-            setError('Please provide your location to continue.');
+            setError(t('onboarding.provideLocation'));
             return;
         }
         if (!name || !phone) {
-            setError('Missing signup information. Please go back and fill the form.');
+            setError(t('onboarding.missingSignupInfo'));
             return;
         }
 
@@ -75,7 +74,6 @@ export default function Onboarding() {
                 latitude: location.lat,
                 longitude: location.lng,
             });
-            // Login the user with the response data (includes token)
             login(data);
             navigate('/dashboard');
         } catch (err) {
@@ -85,14 +83,11 @@ export default function Onboarding() {
         }
     };
 
-    // Simple search simulation (setting lat/lng to a default for search)
     const handleSearch = (e) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
         setLoading(true);
         setError('');
-        // For a proper implementation, we'd use a geocoding API
-        // For now, use default Indian coordinates
         setTimeout(() => {
             setLocation({
                 lat: 21.1458,
@@ -115,19 +110,18 @@ export default function Onboarding() {
                         </div>
                     </div>
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-2 text-center">
-                        Where is your farm?
+                        {t('onboarding.whereIsYourFarm')}
                     </h2>
                     <p className="text-slate-500 text-center text-sm">
-                        Accurate location helps Setu Mitra provide precise hyper-local weather alerts and soil crop suggestions.
+                        {t('onboarding.locationSubtext')}
                     </p>
                     {name && (
                         <p className="mt-2 text-primary font-bold text-sm">
-                            Welcome, {name}! 🌾
+                            {t('onboarding.welcomeName', { name })}
                         </p>
                     )}
                 </div>
 
-                {/* Error Alert */}
                 {error && (
                     <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
                         <span className="material-symbols-outlined text-lg">error</span>
@@ -146,12 +140,12 @@ export default function Onboarding() {
                         ) : (
                             <span className="material-symbols-outlined">my_location</span>
                         )}
-                        <span>Use My Current Location</span>
+                        <span>{t('onboarding.useMyCurrentLocation')}</span>
                     </button>
 
                     <div className="flex items-center gap-4 text-slate-400 text-sm font-medium">
                         <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
-                        OR SEARCH
+                        {t('onboarding.orSearch')}
                         <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
                     </div>
 
@@ -160,7 +154,7 @@ export default function Onboarding() {
                         <input
                             type="text"
                             className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                            placeholder="Search your village, district, or PIN..."
+                            placeholder={t('onboarding.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -190,7 +184,7 @@ export default function Onboarding() {
                                 <span className="material-symbols-outlined animate-spin">progress_activity</span>
                             ) : (
                                 <>
-                                    <span>Save & Continue to Dashboard</span>
+                                    <span>{t('onboarding.saveContinue')}</span>
                                     <span className="material-symbols-outlined">arrow_forward</span>
                                 </>
                             )}
