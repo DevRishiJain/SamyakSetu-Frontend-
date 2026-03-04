@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { loginFarmer, signupFarmer } from '../services/api';
+import { loginFarmer } from '../services/api';
 import { useTranslation } from 'react-i18next';
 
 export default function Auth() {

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getHistory } from '../services/api';
 import { useTranslation } from 'react-i18next';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // ──────── Helpers ────────
 
@@ -86,8 +88,13 @@ function TabButton({ active, icon, label, onClick }) {
 // ──────── Individual history cards ────────
 
 function ChatCard({ item }) {
+    const [expanded, setExpanded] = useState(false);
+
     return (
-        <div className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200">
+        <div
+            onClick={() => setExpanded(!expanded)}
+            className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer"
+        >
             <div className="flex items-start gap-3">
                 <div className={`
                     size-10 rounded-xl flex items-center justify-center flex-shrink-0
@@ -108,12 +115,21 @@ function ChatCard({ item }) {
                         </span>
                         <span className="text-[10px] text-slate-400 flex-shrink-0">{relativeTime(item.createdAt)}</span>
                     </div>
-                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-3">
-                        {item.message}
-                    </p>
-                    <p className="text-[10px] text-slate-400 mt-2">
-                        {formatDate(item.createdAt)} · {formatTime(item.createdAt)}
-                    </p>
+                    <div className={`mt-2 text-sm text-slate-700 dark:text-slate-300 leading-relaxed ${!expanded ? 'line-clamp-3' : ''}`}>
+                        <div className="prose dark:prose-invert max-w-none text-[14px] leading-relaxed break-words">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {typeof item.message === 'string' ? item.message : String(item.message || '')}
+                            </ReactMarkdown>
+                        </div>
+                    </div>
+                    <div className="flex justify-between items-center mt-3">
+                        <p className="text-[10px] text-slate-400">
+                            {formatDate(item.createdAt)} · {formatTime(item.createdAt)}
+                        </p>
+                        <span className="text-[10px] font-medium text-primary hover:underline">
+                            {expanded ? 'Show less' : 'Read more'}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,8 +177,13 @@ function SoilCard({ item }) {
 }
 
 function SamyakAICard({ item }) {
+    const [expanded, setExpanded] = useState(false);
+
     return (
-        <div className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-blue-400/30 transition-all duration-200">
+        <div
+            onClick={() => setExpanded(!expanded)}
+            className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-blue-400/30 transition-all duration-200 cursor-pointer"
+        >
             <div className="flex items-start gap-3">
                 <div className={`
                     size-10 rounded-xl flex items-center justify-center flex-shrink-0
@@ -183,12 +204,21 @@ function SamyakAICard({ item }) {
                         </span>
                         <span className="text-[10px] text-slate-400 flex-shrink-0">{relativeTime(item.createdAt)}</span>
                     </div>
-                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-3">
-                        {item.message}
-                    </p>
-                    <p className="text-[10px] text-slate-400 mt-2">
-                        {formatDate(item.createdAt)} · {formatTime(item.createdAt)}
-                    </p>
+                    <div className={`mt-2 text-sm text-slate-700 dark:text-slate-300 leading-relaxed ${!expanded ? 'line-clamp-3' : ''}`}>
+                        <div className="prose dark:prose-invert max-w-none text-[14px] leading-relaxed break-words">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {typeof item.message === 'string' ? item.message : String(item.message || '')}
+                            </ReactMarkdown>
+                        </div>
+                    </div>
+                    <div className="flex justify-between items-center mt-3">
+                        <p className="text-[10px] text-slate-400">
+                            {formatDate(item.createdAt)} · {formatTime(item.createdAt)}
+                        </p>
+                        <span className="text-[10px] font-medium text-blue-500 hover:underline">
+                            {expanded ? 'Show less' : 'Read more'}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -225,8 +255,6 @@ export default function History() {
 
     useEffect(() => {
         let cancelled = false;
-        setLoading(true);
-        setError(null);
 
         getHistory()
             .then(d => {

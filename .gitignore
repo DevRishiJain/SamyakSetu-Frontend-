@@ -30,3 +30,4 @@ cloudflared-linux-amd64
 .env
 .env.local
 .env.*.local
+samyak-frontend.zip

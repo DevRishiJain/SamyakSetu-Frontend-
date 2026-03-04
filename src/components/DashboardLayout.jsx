@@ -105,7 +105,7 @@ export default function DashboardLayout() {
                     </div>
                 </aside>
 
-                <main className="flex-1 min-w-0 flex flex-col mt-20 md:mt-0 relative overflow-x-hidden">
+                <main className="flex-1 min-w-0 flex flex-col relative overflow-x-hidden">
                     {/* Top Top Header */}
                     <header className="flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 shadow-sm">
                         <div className="flex flex-1 items-center gap-4">
@@ -164,7 +164,7 @@ export default function DashboardLayout() {
                     <div className="w-full h-1 bg-[repeating-linear-gradient(45deg,#ff9933,#ff9933_10px,transparent_10px,transparent_20px)] opacity-30"></div>
 
                     {/* Render specific nested routes here */}
-                    <div className="flex-1">
+                    <div className="flex-1 flex flex-col h-full w-full">
                         <Outlet />
                     </div>
 
@@ -184,9 +184,9 @@ export default function DashboardLayout() {
                     <span className="material-symbols-outlined">science</span>
                     <span className="text-[10px] font-bold">{t('nav.soil')}</span>
                 </NavLink>
-                <NavLink to="/dashboard/soil" className="flex flex-col items-center gap-1 cursor-pointer relative z-10">
-                    <div className="bg-primary size-12 rounded-full flex items-center justify-center -mt-10 border-4 border-background-light dark:border-slate-950 shadow-lg shadow-primary/30">
-                        <span className="material-symbols-outlined text-white text-2xl">add_a_photo</span>
+                <NavLink to="/dashboard/chat" state={{ autoVoice: true }} className="flex flex-col items-center gap-1 cursor-pointer relative z-10">
+                    <div className="bg-primary size-12 rounded-full flex items-center justify-center -mt-10 border-4 border-background-light dark:border-slate-950 shadow-lg shadow-primary/30 shadow-[0_4px_15px_rgba(255,153,51,0.5)]">
+                        <span className="material-symbols-outlined text-white text-2xl font-bold">mic</span>
                     </div>
                 </NavLink>
                 <NavLink to="/dashboard/chat" className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer transition-colors ${isActive ? 'text-primary' : 'text-slate-400 hover:text-primary/70'}`}>

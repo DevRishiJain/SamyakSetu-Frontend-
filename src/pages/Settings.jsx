@@ -86,7 +86,7 @@ export default function Settings() {
                         setLoadingLoc(false);
                     }
                 },
-                (geoErr) => {
+                () => {
                     setLoadingLoc(false);
                     setLocError(t('settings.gpsError'));
                 }
@@ -97,42 +97,7 @@ export default function Settings() {
         }
     };
 
-    const handleManualLocation = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const lat = parseFloat(formData.get('latitude'));
-        const lng = parseFloat(formData.get('longitude'));
 
-        if (isNaN(lat) || isNaN(lng)) {
-            setLocError(t('settings.invalidCoords'));
-            return;
-        }
-
-        setLoadingLoc(true);
-        setLocError('');
-
-        try {
-            await updateLocation({
-                farmerId: user?.id,
-                latitude: lat,
-                longitude: lng,
-            });
-            updateUser({
-                location: { latitude: lat, longitude: lng },
-            });
-            setIsLocModalOpen(false);
-            setSuccess(t('settings.locationSuccess'));
-            setTimeout(() => setSuccess(''), 3000);
-        } catch (err) {
-            setLocError(err.message || 'Failed to update location.');
-        } finally {
-            setLoadingLoc(false);
-        }
-    };
-
-    const locationDisplay = user?.location
-        ? `Lat: ${user.location.latitude?.toFixed(4)}, Lng: ${user.location.longitude?.toFixed(4)}`
-        : t('settings.notSet');
 
     return (
         <div className="p-6 max-w-4xl mx-auto flex-1 w-full space-y-8">

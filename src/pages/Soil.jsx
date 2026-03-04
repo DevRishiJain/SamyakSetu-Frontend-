@@ -2,6 +2,8 @@ import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { uploadSoilImage, chatWithAdvisor } from '../services/api';
 import { useTranslation } from 'react-i18next';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function Soil() {
     const { t } = useTranslation();
@@ -178,8 +180,10 @@ export default function Soil() {
                                 {t('soil.aiAnalysis')}
                             </h2>
                             <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                                <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 text-[15px] leading-relaxed whitespace-pre-wrap">
-                                    {analysis.reply}
+                                <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 text-[15px] leading-relaxed break-words">
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                        {typeof analysis.reply === 'string' ? analysis.reply : String(analysis.reply || '')}
+                                    </ReactMarkdown>
                                 </div>
                             </div>
                         </div>

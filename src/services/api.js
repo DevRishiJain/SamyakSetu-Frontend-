@@ -1,9 +1,9 @@
 // ============================================================
 // SamyakSetu — Central API Service
-// Base URL is defined in vite.config.js via __API_BASE_URL__
+// Base URL is defined in .env via VITE_API_BASE_URL
 // ============================================================
 
-const BASE_URL = typeof __API_BASE_URL__ !== 'undefined' ? __API_BASE_URL__ : 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 /**
  * Returns the current auth token stored in localStorage.
