@@ -7,7 +7,7 @@
 # 1. Server Configuration
 PEM_FILE="../samyak-frontend.pem"
 EC2_USER="ubuntu"
-EC2_IP="100.31.149.193" # Update this if your EC2 IP ever changes!
+EC2_IP="44.207.38.177" # Update this if your EC2 IP ever changes!
 
 echo "======================================================"
 echo "🚀 Starting SamyakSetu Frontend Deployment..."

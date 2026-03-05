@@ -15,7 +15,6 @@ export default function Chat() {
     const [isTyping, setIsTyping] = useState(false);
     const [voiceMode, setVoiceMode] = useState(location.state?.autoVoice || false); // Toggle for end-to-end voice chat
     const [isRecording, setIsRecording] = useState(false);
-    const [recordingTime, setRecordingTime] = useState(0);
     const [isTranscribing, setIsTranscribing] = useState(false);
     const [playingAudioId, setPlayingAudioId] = useState(null); // Track which message audio is playing
     const [ttsLoading, setTtsLoading] = useState(null); // Track which message TTS is loading
@@ -23,7 +22,6 @@ export default function Chat() {
     const endOfMessagesRef = useRef(null);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
-    const recordingTimerRef = useRef(null);
     const audioPlayerRef = useRef(null);
     const audioContextRef = useRef(null);
     const analyserRef = useRef(null);
@@ -148,12 +146,6 @@ export default function Chat() {
 
             mediaRecorder.start();
             setIsRecording(true);
-            setRecordingTime(0);
-
-            // Start timer
-            recordingTimerRef.current = setInterval(() => {
-                setRecordingTime(prev => prev + 1);
-            }, 1000);
 
         } catch (err) {
             console.error('Mic access error:', err);
@@ -175,9 +167,7 @@ export default function Chat() {
                 // Stop all mic tracks
                 mediaRecorderRef.current.stream?.getTracks().forEach(track => track.stop());
 
-                clearInterval(recordingTimerRef.current);
                 setIsRecording(false);
-                setRecordingTime(0);
                 resolve(audioFile);
             };
 
@@ -229,11 +219,6 @@ export default function Chat() {
 
             mediaRecorder.start();
             setIsRecording(true);
-            setRecordingTime(0);
-
-            recordingTimerRef.current = setInterval(() => {
-                setRecordingTime(prev => prev + 1);
-            }, 1000);
 
             // Voice Activity Detection (VAD)
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -259,8 +244,8 @@ export default function Chat() {
                 if (average > 15) { // Threshold for speech
                     lastSpeechTime = Date.now();
                     isSpeakingDetected = true;
-                } else if (isSpeakingDetected && (Date.now() - lastSpeechTime > 2000)) {
-                    // 2 seconds of silence after speaking detected -> auto stop
+                } else if (isSpeakingDetected && (Date.now() - lastSpeechTime > 1500)) {
+                    // 1.5 seconds of silence after speaking detected -> auto stop
                     stopAndProcessVoiceChat();
                     return;
                 }
@@ -342,7 +327,6 @@ export default function Chat() {
             if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
                 audioContextRef.current.close().catch(() => { });
             }
-            clearInterval(recordingTimerRef.current);
             if (audioPlayerRef.current) {
                 audioPlayerRef.current.pause();
             }
@@ -418,12 +402,6 @@ export default function Chat() {
     useEffect(() => {
         endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isTyping]);
-
-    const formatTime = (seconds) => {
-        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const s = (seconds % 60).toString().padStart(2, '0');
-        return `${m}:${s}`;
-    };
 
     const isBotTalking = playingAudioId !== null;
 
@@ -626,7 +604,7 @@ export default function Chat() {
                                                     ></div>
                                                 ))}
                                             </div>
-                                            <span className="text-sm font-mono font-bold text-purple-600">{formatTime(recordingTime)}</span>
+                                            <span className="text-sm font-bold text-purple-600 tracking-wider">Listening...</span>
                                             <div className="flex items-center gap-1">
                                                 {[...Array(5)].map((_, i) => (
                                                     <div
@@ -710,7 +688,7 @@ export default function Chat() {
                             {isRecording && (
                                 <div className="flex items-center gap-2 px-3 py-1 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-full">
                                     <div className="size-2 bg-red-500 rounded-full animate-pulse"></div>
-                                    <span className="text-xs font-mono font-bold text-red-600">{formatTime(recordingTime)}</span>
+                                    <span className="text-xs font-bold text-red-600">Listening...</span>
                                 </div>
                             )}
 
