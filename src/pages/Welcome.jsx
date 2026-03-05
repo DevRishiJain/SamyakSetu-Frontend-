@@ -109,9 +109,7 @@ export default function Welcome() {
                     {/* Header */}
                     <header className="flex items-center justify-between border-b border-primary/10 px-6 py-4 lg:px-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center size-10 rounded-lg bg-primary text-white">
-                                <span className="material-symbols-outlined text-2xl">potted_plant</span>
-                            </div>
+                            <img src="/images/favicon.png" alt="Samyak Setu Logo" className="size-10 object-contain drop-shadow-sm" />
                             <h2 className="text-xl font-bold tracking-tight text-primary">Samyak Setu</h2>
                         </div>
 
@@ -263,9 +261,7 @@ export default function Welcome() {
                     <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12 px-6 lg:px-20">
                         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                             <div className="flex items-center gap-3">
-                                <div className="flex items-center justify-center size-8 rounded-md bg-primary text-white">
-                                    <span className="material-symbols-outlined text-lg">potted_plant</span>
-                                </div>
+                                <img src="/images/favicon.png" alt="Samyak Setu Logo" className="size-8 object-contain drop-shadow-sm" />
                                 <h2 className="text-lg font-bold tracking-tight text-primary">Samyak Setu</h2>
                             </div>
 

@@ -75,9 +75,7 @@ export default function DashboardLayout() {
                 {/* Desktop Sidebar (Hidden on Mobile) */}
                 <aside className="w-64 hidden bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 md:flex flex-col sticky top-0 h-screen z-50">
                     <div className="p-6 flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
-                        <div className="bg-primary text-white p-2 rounded-lg">
-                            <span className="material-symbols-outlined text-2xl">agriculture</span>
-                        </div>
+                        <img src="/images/favicon.png" alt="Samyak Setu Logo" className="size-10 object-contain drop-shadow-sm" />
                         <h2 className="text-xl font-bold text-primary dark:text-white tracking-tight">Samyak Setu</h2>
                     </div>
                     <nav className="flex-1 px-4 space-y-2 py-4">
@@ -112,14 +110,12 @@ export default function DashboardLayout() {
                     {/* Top Top Header */}
                     <header className="flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-40 border-b border-slate-200 dark:border-slate-800 shadow-sm shrink-0 relative">
                         <div className="flex flex-1 items-center gap-4">
-                            {/* Mobile Profile */}
+                            {/* Mobile: Logo + App Name + Location */}
                             <div className="md:hidden flex items-center gap-3">
-                                <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard/settings')}>
-                                    <img alt="User Profile" className="size-10 rounded-full border-2 border-primary/20 object-cover" src={userAvatar} />
-                                    <div className="leading-tight">
-                                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{userName}</p>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{locationDisplay}</p>
-                                    </div>
+                                <img src="/images/favicon.png" alt="SamyakSetu" className="size-9 object-contain" />
+                                <div className="leading-tight">
+                                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-tight">SamyakSetu</p>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{locationDisplay}</p>
                                 </div>
                             </div>
                             {/* Desktop Location */}
@@ -198,7 +194,11 @@ export default function DashboardLayout() {
                     <span className="text-[10px] font-bold">{t('nav.chat')}</span>
                 </NavLink>
                 <NavLink to="/dashboard/settings" className={({ isActive }) => `flex flex-col items-center gap-1 cursor-pointer transition-colors ${isActive ? 'text-primary' : 'text-slate-400 hover:text-primary/70'}`}>
-                    <span className="material-symbols-outlined">person</span>
+                    <img
+                        src={userAvatar}
+                        alt="Profile"
+                        className="size-7 rounded-full object-cover border-2 border-transparent group-[.active]:border-primary"
+                    />
                     <span className="text-[10px] font-bold">{t('nav.settings')}</span>
                 </NavLink>
             </div>
@@ -278,9 +278,7 @@ export default function DashboardLayout() {
                     <aside className="relative w-72 max-w-[80%] bg-white dark:bg-slate-900 h-full flex flex-col shadow-2xl animate-in slide-in-from-left duration-200 z-10">
                         <div className="p-6 flex justify-between items-center border-b border-slate-100 dark:border-slate-800">
                             <div className="flex items-center gap-3 cursor-pointer" onClick={() => { setIsMobileMenuOpen(false); navigate('/dashboard'); }}>
-                                <div className="bg-primary text-white p-2 rounded-lg">
-                                    <span className="material-symbols-outlined text-xl">agriculture</span>
-                                </div>
+                                <img src="/images/favicon.png" alt="Samyak Setu Logo" className="size-8 object-contain drop-shadow-sm" />
                                 <h2 className="text-lg font-bold text-primary dark:text-white tracking-tight">Samyak Setu</h2>
                             </div>
                             <button onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 bg-slate-100 dark:bg-slate-800 dark:hover:text-white rounded-full transition-colors cursor-pointer">
