@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,9 @@ export default function DashboardLayout() {
     const { language, setLanguage } = useLanguage();
     const { user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const isHomePage = location.pathname === '/dashboard' || location.pathname === '/dashboard/';
+    const isChatPage = location.pathname.includes('/dashboard/chat');
     const [isHelpOpen, setIsHelpOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -35,11 +38,11 @@ export default function DashboardLayout() {
                     } else if (state) {
                         setLocationName(state);
                     } else {
-                        setLocationName(`Lat: ${user.location.latitude.toFixed(2)}, Lng: ${user.location.longitude.toFixed(2)}`);
+                        setLocationName('');
                     }
                 } catch (err) {
                     console.error("Error fetching location name:", err);
-                    setLocationName(`Lat: ${user.location.latitude.toFixed(2)}, Lng: ${user.location.longitude.toFixed(2)}`);
+                    setLocationName('');
                 }
             }
         };
@@ -47,8 +50,8 @@ export default function DashboardLayout() {
     }, [user?.location?.latitude, user?.location?.longitude, language]);
 
     // Format location display
-    const locationDisplay = user?.location
-        ? (locationName || `Lat: ${user.location.latitude?.toFixed(2)}, Lng: ${user.location.longitude?.toFixed(2)}`)
+    const locationDisplay = user?.location && locationName
+        ? locationName
         : t('nav.farmLocation');
 
     const defaultAvatar = "https://lh3.googleusercontent.com/aida-public/AB6AXuCkoW3O0sqso3W3ZBs4Nz0ab8UYjYQdHXcwvPTwPTolXk1SRT7T8rTdTuAmVUCn46OpJnmmrE2VQ5vKAe0KZ1qABuhCdhK-2svNZy9-l4JFA42x25kh1YrLeL-9SoZzsvlmdGvtjRMfqD3CvpJ2jQ9F2c9bKPGYHxU34E82jBcou1lNJhqcHXFvNJMbsAH6XGXNVqi_0LIvq4YDRlUN8DSoVahmY_atIaMKaY3MfWULwkedBFy7iwRRRZBg1m1ZeL3hxsw5h39yTw";
@@ -66,9 +69,9 @@ export default function DashboardLayout() {
     const currentLangShort = LANGUAGES.find(l => l.native === language)?.short || 'EN';
 
     return (
-        <div className="bg-background-light dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300"
+        <div className="bg-background-light dark:bg-slate-950 text-slate-900 dark:text-slate-100 h-[100dvh] overflow-hidden transition-colors duration-300"
             style={{ backgroundImage: "radial-gradient(rgba(11, 106, 57, 0.08) 0.5px, transparent 0.5px)", backgroundSize: "20px 20px" }}>
-            <div className="layout-container flex flex-col md:flex-row h-full min-h-screen">
+            <div className="layout-container flex flex-col md:flex-row h-full">
                 {/* Desktop Sidebar (Hidden on Mobile) */}
                 <aside className="w-64 hidden bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 md:flex flex-col sticky top-0 h-screen z-50">
                     <div className="p-6 flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
@@ -105,19 +108,17 @@ export default function DashboardLayout() {
                     </div>
                 </aside>
 
-                <main className="flex-1 min-w-0 flex flex-col relative overflow-x-hidden">
+                <main className="flex-1 min-w-0 flex flex-col relative overflow-hidden h-full">
                     {/* Top Top Header */}
-                    <header className="flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+                    <header className="flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-40 border-b border-slate-200 dark:border-slate-800 shadow-sm shrink-0 relative">
                         <div className="flex flex-1 items-center gap-4">
-                            {/* Mobile Hamburger & Profile */}
+                            {/* Mobile Profile */}
                             <div className="md:hidden flex items-center gap-3">
-                                <button onClick={() => setIsMobileMenuOpen(true)} className="p-1.5 -ml-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer flex items-center justify-center">
-                                    <span className="material-symbols-outlined text-3xl">menu</span>
-                                </button>
-                                <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard/settings')}>
-                                    <img alt="User Profile" className="size-9 rounded-full border-2 border-primary/20 object-cover" src={userAvatar} />
+                                <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard/settings')}>
+                                    <img alt="User Profile" className="size-10 rounded-full border-2 border-primary/20 object-cover" src={userAvatar} />
                                     <div className="leading-tight">
                                         <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{userName}</p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{locationDisplay}</p>
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +129,7 @@ export default function DashboardLayout() {
                             </div>
                         </div>
                         <div className="flex items-center gap-2 md:gap-4">
-                            <div className="relative hidden md:block">
+                            <div className="relative">
                                 <button onClick={() => setIsLangMenuOpen(!isLangMenuOpen)} className="p-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg flex items-center gap-1 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
                                     <span className="material-symbols-outlined text-lg">language</span>
                                     {currentLangShort}
@@ -161,16 +162,19 @@ export default function DashboardLayout() {
                         </div>
                     </header>
 
-                    <div className="w-full h-1 bg-[repeating-linear-gradient(45deg,#ff9933,#ff9933_10px,transparent_10px,transparent_20px)] opacity-30"></div>
+                    <div className="w-full h-1 bg-[repeating-linear-gradient(45deg,#ff9933,#ff9933_10px,transparent_10px,transparent_20px)] opacity-30 shrink-0"></div>
 
-                    {/* Render specific nested routes here */}
-                    <div className="flex-1 flex flex-col h-full w-full">
-                        <Outlet />
+                    {/* Scrollable Container for Page Content + Footer */}
+                    <div className={`flex-1 overflow-x-hidden relative flex flex-col pb-24 md:pb-0 ${isChatPage ? 'overflow-y-hidden' : 'overflow-y-auto'}`}>
+                        {/* Nested Routes Container - removed h-full to allow natural scroll height expansion (except on chat where it must be strictly constrained) */}
+                        <div className={`flex-1 flex flex-col w-full relative ${isChatPage ? 'h-full min-h-0' : ''}`}>
+                            <Outlet />
+                        </div>
+
+                        <footer className={`p-6 text-center border-t border-slate-200 dark:border-slate-800 mt-auto bg-stone-50 dark:bg-slate-900 shrink-0 ${isHomePage ? 'block' : 'hidden md:block'}`}>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">© {new Date().getFullYear()} Samyak Setu. {t('welcome.featuresHeading')}.</p>
+                        </footer>
                     </div>
-
-                    <footer className="p-6 text-center border-t border-slate-200 dark:border-slate-800 mt-auto bg-stone-50 dark:bg-slate-900">
-                        <p className="text-xs text-slate-500 dark:text-slate-400">© {new Date().getFullYear()} Samyak Setu. {t('welcome.featuresHeading')}.</p>
-                    </footer>
                 </main>
             </div>
 
@@ -198,8 +202,6 @@ export default function DashboardLayout() {
                     <span className="text-[10px] font-bold">{t('nav.settings')}</span>
                 </NavLink>
             </div>
-            {/* Added a spacer to make space for the bottom nav on mobile */}
-            <div className="h-20 md:h-0"></div>
 
             {/* Help Center Modal */}
             {isHelpOpen && (

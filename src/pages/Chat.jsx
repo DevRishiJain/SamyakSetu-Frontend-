@@ -441,8 +441,8 @@ export default function Chat() {
             )}
 
             <div className="flex-1 w-full flex flex-col h-full overflow-hidden relative">
-                {/* Chat Header */}
-                <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 p-4 px-6 flex items-center justify-between shadow-sm z-10 shrink-0">
+                {/* Chat Header - secondary navbar made strictly sticky relative to Dashboard main container */}
+                <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 p-4 px-6 flex items-center justify-between shadow-sm z-30 shrink-0 sticky top-0">
                     <div className="flex items-center gap-4">
                         <div className="bg-saffron/10 text-saffron p-2 rounded-full relative shadow-sm border border-saffron/20">
                             <span className="material-symbols-outlined text-3xl">smart_toy</span>
