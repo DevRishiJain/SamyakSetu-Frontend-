@@ -35,7 +35,7 @@ ssh -o StrictHostKeyChecking=no -i "$PEM_FILE" $EC2_USER@$EC2_IP << 'EOF'
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     
     echo "   -> 📦 Installing NPM Dependencies..."
-    npm install > /dev/null 2>&1
+    npm install
     
     echo "   -> 🏗️ Building Production React App..."
     npm run build
@@ -51,5 +51,5 @@ EOF
 
 echo "======================================================"
 echo "🎉 DEPLOYMENT 100% COMPLETE! "
-echo "🌍 Check it out live: http://$EC2_IP"
+echo "🌍 Check it out live: https://samyaksetu.in"
 echo "======================================================"
