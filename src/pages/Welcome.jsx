@@ -268,11 +268,7 @@ export default function Welcome() {
                                 </div>
                                 <h2 className="text-lg font-bold tracking-tight text-primary">Samyak Setu</h2>
                             </div>
-                            <div className="flex gap-8 text-sm font-medium text-slate-500 dark:text-slate-400">
-                                <a className="hover:text-primary transition-colors cursor-pointer">{t('welcome.privacyPolicy')}</a>
-                                <a className="hover:text-primary transition-colors cursor-pointer">{t('welcome.termsOfService')}</a>
-                                <a className="hover:text-primary transition-colors cursor-pointer">{t('welcome.contactSupport')}</a>
-                            </div>
+
                             <p className="text-sm text-slate-400 italic text-center md:text-right">
                                 {t('welcome.developedForIndia')}
                             </p>

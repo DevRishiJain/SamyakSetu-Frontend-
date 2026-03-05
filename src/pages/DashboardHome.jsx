@@ -78,26 +78,26 @@ export default function DashboardHome() {
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 bg-gradient-to-br from-primary to-green-800 rounded-xl p-8 text-white relative overflow-hidden shadow-lg border-b-4 border-saffron flex items-center" style={{ backgroundImage: "linear-gradient(to bottom right, #0b6a39, #064e2b)" }}>
                     <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between h-full w-full">
-                        <div className="max-w-md pr-4">
-                            <h1 className="text-2xl md:text-3xl font-bold mb-3 leading-tight">{t('dashboard.greeting', { name: user?.name?.split(' ')[0] || t('common.farmer') })}</h1>
-                            <p className="text-white/80 text-sm md:text-base">{t('dashboard.subtext')}</p>
-                            <div className="mt-6 flex gap-4">
+                        <div className="max-w-md pr-4 md:pr-4 pr-0 flex flex-col items-center text-center md:items-start md:text-left">
+                            <h1 className="text-2xl md:text-3xl font-bold mb-3 leading-tight w-full">{t('dashboard.greeting', { name: user?.name?.split(' ')[0] || t('common.farmer') })}</h1>
+                            <p className="text-white/80 text-sm md:text-base w-full">{t('dashboard.subtext')}</p>
+                            <div className="mt-6 flex gap-4 w-full justify-center md:justify-start">
                                 <button
                                     onClick={() => navigate('/dashboard/soil')}
-                                    className="bg-saffron text-white px-6 py-2.5 rounded-lg font-bold shadow-md hover:scale-105 transition-transform whitespace-nowrap cursor-pointer"
+                                    className="bg-saffron text-white px-6 py-2.5 rounded-lg font-bold shadow-md hover:scale-105 transition-transform whitespace-nowrap cursor-pointer mx-auto md:mx-0"
                                 >
                                     {t('dashboard.getSoilReport')}
                                 </button>
                             </div>
                         </div>
-                        <div className="mt-8 md:mt-0 relative flex flex-col items-center flex-shrink-0">
-                            <div className="bg-white text-slate-800 p-3 rounded-2xl rounded-br-none shadow-xl mb-3 max-w-[160px] border-2 border-saffron animate-bounce relative z-20">
+                        <div className="mt-8 md:mt-0 relative flex flex-col items-center flex-shrink-0 mx-auto md:mx-0">
+                            <div className="bg-white text-slate-800 p-3 rounded-2xl md:rounded-br-none shadow-xl mb-3 max-w-[160px] border-2 border-saffron animate-bounce relative z-20">
                                 <p className="text-[11px] md:text-xs font-bold leading-tight text-center">{t('dashboard.botText')}</p>
                             </div>
                             <div className="bg-saffron rounded-full p-3 border-4 border-white shadow-lg flex items-center justify-center">
                                 <span className="material-symbols-outlined text-4xl text-white">smart_toy</span>
                             </div>
-                            <p className="text-[10px] font-bold mt-2 uppercase tracking-widest text-white/90">{t('dashboard.botName')}</p>
+                            <p className="text-[10px] font-bold mt-2 uppercase tracking-widest text-white/90 text-center">{t('dashboard.botName')}</p>
                         </div>
                     </div>
                 </div>
@@ -282,7 +282,6 @@ export default function DashboardHome() {
                             <span className="material-symbols-outlined text-primary">new_releases</span>
                             {t('common.comingSoon')}
                         </h3>
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest bg-white dark:bg-slate-800 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">{t('dashboard.nextWeekUpdate')}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-900/20 dark:to-teal-900/20 p-4 rounded-xl border border-emerald-500/30 flex flex-row items-center justify-between hover:bg-emerald-500/20 transition-colors cursor-help group shadow-inner relative overflow-hidden">
