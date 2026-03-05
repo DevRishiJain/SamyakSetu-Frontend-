@@ -144,7 +144,7 @@
         "weatherUnavailable": "Weather data unavailable",
         "humidity": "Humidity",
         "wind": "Wind",
-        "fiveDayForecast": "5-Day Forecast",
+        "fiveDayForecast": "Today's Forecast",
         "latestAdvisory": "Latest Advisory",
         "advisoryTimelineHint": "Your advisory timeline will appear here as you use Soil Scan and Chat with AI.",
         "viewHistory": "View History",

@@ -144,7 +144,7 @@
         "weatherUnavailable": "हवामान उपलब्ध नाही",
         "humidity": "आर्द्रता",
         "wind": "वारा",
-        "fiveDayForecast": "5-दिवस अंदाज",
+        "fiveDayForecast": "आजचा अंदाज",
         "latestAdvisory": "नवीनतम सल्ला",
         "advisoryTimelineHint": "माती स्कॅन वापरल्यावर टाइमलाइन इथे दिसेल.",
         "viewHistory": "इतिहास पहा",

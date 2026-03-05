@@ -144,7 +144,7 @@
         "weatherUnavailable": "मौसम का आंकड़ा उपलब्ध नहीं है",
         "humidity": "नमी",
         "wind": "हवा",
-        "fiveDayForecast": "5-दिन का पूर्वानुमान",
+        "fiveDayForecast": "आज का पूर्वानुमान",
         "latestAdvisory": "नवीनतम सलाह",
         "advisoryTimelineHint": "जैसे ही आप मिट्टी स्कैन और AI चैट का उपयोग करेंगे, आपकी सलाहकार टाइमलाइन यहाँ दिखाई देगी।",
         "viewHistory": "इतिहास देखें",

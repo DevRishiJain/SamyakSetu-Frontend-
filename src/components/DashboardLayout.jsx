@@ -114,7 +114,7 @@ export default function DashboardLayout() {
                             <div className="md:hidden flex items-center gap-3">
                                 <img src="/images/favicon.png" alt="SamyakSetu" className="size-9 object-contain" />
                                 <div className="leading-tight">
-                                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-tight">SamyakSetu</p>
+                                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-tight">Samyak Setu</p>
                                     <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{locationDisplay}</p>
                                 </div>
                             </div>

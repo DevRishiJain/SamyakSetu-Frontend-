@@ -144,7 +144,7 @@
         "weatherUnavailable": "আবহাওয়া ডেটা পাওয়া যায়নি",
         "humidity": "আর্দ্রতা",
         "wind": "বাতাস",
-        "fiveDayForecast": "5-দিনের পূর্বাভাস",
+        "fiveDayForecast": "আজকের পূর্বাভাস",
         "latestAdvisory": "সর্বশেষ পরামর্শ",
         "advisoryTimelineHint": "মাটি স্ক্যান ও AI চ্যাট ব্যবহার করলে টাইমলাইন এখানে দেখাবে।",
         "viewHistory": "ইতিহাস দেখুন",
